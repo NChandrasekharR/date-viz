@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Most Hinge Chats Die in 48 Hours</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@700&family=Merriweather:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Merriweather', serif;
+      background: #F9F9F7;
+      color: #111;
+      line-height: 1.6;
+    }
+
+    a {
+      color: #2A7F8E;
+    }
+
+    .hero, #scrolly, .methods {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    header.hero {
+      padding-top: 64px;
+      padding-bottom: 48px;
+    }
+
+    .hero .kicker {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 0 0 8px;
+    }
+
+    .hero h1 {
+      font-family: 'Libre Franklin', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      line-height: 1.1;
+      margin: 0 0 16px;
+    }
+
+    .hero .dek {
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    #scrolly {
+      position: relative;
+      padding-bottom: 120px;
+    }
+
+    article.step {
+      position: relative;
+      margin-bottom: 120px;
+      opacity: 0.3;
+      transform: translateY(40px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    article.step.is-active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    article.step h2 {
+      font-family: 'Libre Franklin', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin: 0 0 16px;
+      position: sticky;
+      top: 12px;
+      background: rgba(249, 249, 247, 0.9);
+      padding: 8px 0;
+    }
+
+    article.step p.body {
+      margin-top: 0;
+      font-size: 1.05rem;
+    }
+
+    figure {
+      margin: 32px 0 0;
+    }
+
+    figcaption {
+      font-size: 0.85rem;
+      color: #555;
+      margin-bottom: 12px;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: transparent;
+    }
+
+    .methods {
+      padding-bottom: 80px;
+    }
+
+    #toggle-methods {
+      background: none;
+      border: 1px solid #2A7F8E;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-family: 'Libre Franklin', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    #toggle-methods:focus {
+      outline: 2px solid #C92C2C;
+      outline-offset: 2px;
+    }
+
+    #toggle-methods[aria-expanded="true"] {
+      background: rgba(42, 127, 142, 0.35);
+    }
+
+    #methods-body {
+      margin-top: 20px;
+      border-top: 1px solid #E0E0E0;
+      padding-top: 16px;
+      font-size: 0.95rem;
+    }
+
+    .tooltip {
+      position: fixed;
+      pointer-events: none;
+      background: rgba(17, 17, 17, 0.92);
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      max-width: 220px;
+      z-index: 20;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .chart-axis line,
+    .chart-axis path {
+      stroke: #E0E0E0;
+      stroke-width: 1;
+    }
+
+    .chart-axis text {
+      font-size: 0.8rem;
+      fill: #555;
+    }
+
+    .survival-line {
+      fill: none;
+      stroke: #2A7F8E;
+      stroke-width: 2.5;
+    }
+
+    .hazard-area {
+      fill: rgba(42, 127, 142, 0.35);
+    }
+
+    .survival-marker {
+      fill: #C92C2C;
+      stroke: #fff;
+      stroke-width: 1.5;
+    }
+
+    .bar-concrete {
+      fill: rgba(42, 127, 142, 0.6);
+    }
+
+    .bar-nonconcrete {
+      fill: rgba(17, 17, 17, 0.15);
+    }
+
+    .error-line {
+      stroke: #111;
+      stroke-width: 1.5;
+    }
+
+    .grid-line {
+      stroke: #E0E0E0;
+      stroke-width: 1;
+    }
+
+    .heat-rect {
+      stroke: rgba(255, 255, 255, 0.2);
+      stroke-width: 0.5;
+    }
+
+    .quadrant rect {
+      transition: opacity 0.3s ease;
+    }
+
+    .toggle-indicator {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: rgba(17, 17, 17, 0.85);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-family: 'Libre Franklin', sans-serif;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      z-index: 30;
+    }
+
+    @media (max-width: 768px) {
+      header.hero {
+        padding-top: 48px;
+      }
+      article.step {
+        margin-bottom: 96px;
+      }
+      article.step h2 {
+        top: 0;
+      }
+      .toggle-indicator {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        top: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toggle-indicator" role="status" aria-live="polite">Concrete invites only</div>
+  <header class="hero">
+    <p class="kicker">Dating &amp; Data</p>
+    <h1>Most Hinge Chats Die in 48 Hours</h1>
+    <p class="dek">Across six years of swipes and chats, the odds of staying alive plunge after two days. Survive that window and your chance of meeting jumps.</p>
+  </header>
+
+  <section id="scrolly">
+    <article class="step">
+      <h2>The Drop</h2>
+      <p class="body">
+        In our dataset, half of conversations ended by about <span id="stat-median-life"></span> hours. 
+        Only <span id="stat-surv-24"></span>% survive 24 hours, and just <span id="stat-surv-48"></span>% make it to 48—what we call the <strong>Cliff</strong>.
+        Threads that survive to 72 hours are <span id="stat-lift-survive72"></span>× as likely to become a date as those that die earlier.
+      </p>
+      <figure>
+        <figcaption>A Kaplan–Meier curve shows a steep drop near the 48-hour mark. Shaded bands indicate hourly hazard.</figcaption>
+        <svg id="chart-survival" role="img" aria-label="Survival of conversations over hours since match"></svg>
+      </figure>
+    </article>
+
+    <article class="step">
+      <h2>Ask Early. Be Specific.</h2>
+      <p class="body">
+        When the first invitation appears within the first ten messages—and names a time or place—meeting rates climb.
+        Concrete asks in the <em><span id="stat-best-invite-bin"></span></em> window convert best.
+      </p>
+      <figure>
+        <figcaption>Meeting rate by the message number of the first invitation, with 95% confidence intervals; colored by whether the ask was concrete.</figcaption>
+        <svg id="chart-invite" role="img" aria-label="Meeting rates by first invite timing and concreteness"></svg>
+      </figure>
+    </article>
+
+    <article class="step">
+      <h2>Short &amp; Curious Beats Long &amp; Polished</h2>
+      <p class="body">
+        Conversations where the first ten messages skew shorter and include questions more often have higher odds of meeting.
+        The “Short &amp; Curious” quadrant yields a meeting rate of <span id="stat-short-curious-rate"></span>% vs <span id="stat-long-silent-rate"></span>% for “Long &amp; Silent.”
+      </p>
+      <figure>
+        <figcaption>Each tile shows meeting propensity by question density and message length in the opening exchange.</figcaption>
+        <svg id="chart-curiosity" role="img" aria-label="Meeting rates by question density and message length quadrants"></svg>
+      </figure>
+    </article>
+
+    <article class="step">
+      <h2>Tempo Matters</h2>
+      <p class="body">
+        Reply too fast and it can feel robotic; wait too long and momentum dies. In this dataset, the sweet spot for a first message was 
+        <span id="stat-sweet-spot"></span>, with a peak meeting rate of <span id="stat-peak-delay-rate"></span>%.
+      </p>
+      <figure>
+        <figcaption>Meeting rates across first-message delay bins. The 1–6 hour band stands out.</figcaption>
+        <svg id="chart-delay" role="img" aria-label="Meeting rates by first-message delay bins"></svg>
+      </figure>
+    </article>
+
+    <article class="step">
+      <h2>The Weekly Weather of Asking</h2>
+      <p class="body">
+        Certain hours invite yeses. A heatmap of the first concrete asks shows hot lanes like <span id="stat-hotlane"></span>.
+      </p>
+      <figure>
+        <figcaption>Propensity (normalized) of making a concrete invite by day and hour.</figcaption>
+        <svg id="chart-heatmap" role="img" aria-label="When concrete invites tend to happen"></svg>
+      </figure>
+    </article>
+  </section>
+
+  <footer class="methods">
+    <button id="toggle-methods" aria-expanded="false">Methods &amp; Caveats</button>
+    <div id="methods-body" hidden>
+      <p><strong>Alive vs. dead:</strong> A conversation is “alive” until 72 hours pass without a new message on the visible side of the chat. Ongoing threads are right-censored.</p>
+      <p><strong>Meeting:</strong> Conversations marked “Yes” in the dataset’s <code>met</code> field.</p>
+      <p><strong>Confidence intervals:</strong> Binomial Wilson intervals for proportions; survival via Kaplan–Meier; hazard smoothed with a moving window.</p>
+      <p><strong>Visibility:</strong> We only observe one side of the messages; timing signals are approximate. Results are descriptive, not causal.</p>
+    </div>
+  </footer>
+
+  <div class="tooltip" role="tooltip" id="tooltip" aria-hidden="true"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" referrerpolicy="no-referrer"></script>
+  <script>
+    const state = {
+      concreteOnly: true,
+      inviteTimingMethod: 'exact',
+      data: [],
+    };
+
+    const tooltip = document.getElementById('tooltip');
+    const toggleIndicator = document.querySelector('.toggle-indicator');
+
+    function showTooltip(html, event) {
+      tooltip.innerHTML = html;
+      tooltip.style.opacity = 1;
+      tooltip.style.left = `${event.clientX + 12}px`;
+      tooltip.style.top = `${event.clientY + 12}px`;
+      tooltip.setAttribute('aria-hidden', 'false');
+    }
+
+    function moveTooltip(event) {
+      tooltip.style.left = `${event.clientX + 12}px`;
+      tooltip.style.top = `${event.clientY + 12}px`;
+    }
+
+    function hideTooltip() {
+      tooltip.style.opacity = 0;
+      tooltip.setAttribute('aria-hidden', 'true');
+    }
+
+    function parseDate(value) {
+      if (!value) return null;
+      const date = new Date(value);
+      return isNaN(date) ? null : date;
+    }
+
+    function differenceInHours(a, b) {
+      return (b.getTime() - a.getTime()) / (1000 * 60 * 60);
+    }
+
+    function formatPercent(value, digits = 0) {
+      if (value === null || value === undefined || isNaN(value)) return '—';
+      return (value * 100).toFixed(digits);
+    }
+
+    function formatRate(value, digits = 1) {
+      if (value === null || value === undefined || isNaN(value)) return '—';
+      return value.toFixed(digits);
+    }
+
+    function wilsonInterval(successes, total, z = 1.96) {
+      if (!total) return null;
+      const p = successes / total;
+      const denom = 1 + (z ** 2) / total;
+      const centre = p + (z ** 2) / (2 * total);
+      const margin = z * Math.sqrt((p * (1 - p) + (z ** 2) / (4 * total)) / total);
+      const lower = Math.max(0, (centre - margin) / denom);
+      const upper = Math.min(1, (centre + margin) / denom);
+      return { lower, upper };
+    }
+
+    function metValue(entry) {
+      if (!entry) return null;
+      if (entry === 'Yes') return true;
+      if (entry === 'No' || entry === 'Not yet') return false;
+      return null;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function movingAverage(values, window = 3) {
+      if (!values.length) return [];
+      return values.map((v, i) => {
+        const start = Math.max(0, i - Math.floor(window / 2));
+        const end = Math.min(values.length, i + Math.ceil(window / 2));
+        const slice = values.slice(start, end);
+        return d3.mean(slice);
+      });
+    }
+
+    function computeSurvival(records, maxHours = 168, inactivity = 72) {
+      const survivalRecords = [];
+      for (const d of records) {
+        const match = parseDate(d.match_time);
+        const last = parseDate(d.last_msg_time);
+        let span = Number.isFinite(d.duration_hours) ? d.duration_hours : null;
+        if ((span === null || isNaN(span)) && match && last) {
+          span = differenceInHours(match, last);
+        }
+        if (!Number.isFinite(span)) continue;
+        if (span < 0) continue;
+        const deathTime = span + inactivity;
+        const cappedTime = Math.min(deathTime, maxHours);
+        const event = deathTime <= maxHours;
+        const met = metValue(d.met);
+        survivalRecords.push({
+          time: cappedTime,
+          rawTime: deathTime,
+          baseSpan: span,
+          event,
+          met,
+        });
+      }
+
+      if (!survivalRecords.length) {
+        return {
+          curve: [
+            { time: 0, survival: 1 },
+            { time: maxHours, survival: 1 },
+          ],
+          hazard: [],
+          survivalAt: (t) => 1,
+          medianLife: null,
+          surviveMetRate: null,
+          dieMetRate: null,
+        };
+      }
+
+      const sorted = survivalRecords
+        .slice()
+        .sort((a, b) => (a.time - b.time) || (b.event - a.event));
+
+      const aggregated = [];
+      for (const rec of sorted) {
+        const lastAgg = aggregated[aggregated.length - 1];
+        if (lastAgg && Math.abs(lastAgg.time - rec.time) < 1e-6) {
+          if (rec.event) lastAgg.deaths += 1; else lastAgg.censored += 1;
+        } else {
+          aggregated.push({
+            time: rec.time,
+            deaths: rec.event ? 1 : 0,
+            censored: rec.event ? 0 : 1,
+          });
+        }
+      }
+
+      let atRisk = sorted.length;
+      let survival = 1;
+      const curve = [{ time: 0, survival: 1 }];
+      for (const { time, deaths, censored } of aggregated) {
+        const prev = curve[curve.length - 1];
+        curve.push({ time, survival: prev.survival });
+        if (deaths > 0 && atRisk > 0) {
+          survival *= (1 - deaths / atRisk);
+        }
+        curve.push({ time, survival });
+        atRisk -= (deaths + censored);
+        if (atRisk <= 0) break;
+      }
+      const lastPoint = curve[curve.length - 1];
+      if (lastPoint.time < maxHours) {
+        curve.push({ time: maxHours, survival: lastPoint.survival });
+      }
+
+      const hazardBuckets = Array.from({ length: maxHours }, () => ({ deaths: 0, censored: 0 }));
+      for (const rec of sorted) {
+        const bucket = Math.min(maxHours - 1, Math.floor(clamp(rec.time - 1e-6, 0, maxHours - 1)));
+        if (rec.event && rec.time < maxHours) {
+          hazardBuckets[bucket].deaths += 1;
+        } else {
+          hazardBuckets[bucket].censored += 1;
+        }
+      }
+      const hazardSeries = [];
+      atRisk = sorted.length;
+      for (let h = 0; h < hazardBuckets.length; h += 1) {
+        const { deaths, censored } = hazardBuckets[h];
+        const hazard = atRisk > 0 ? deaths / atRisk : 0;
+        hazardSeries.push({ hour: h + 0.5, hazard, atRisk });
+        atRisk -= (deaths + censored);
+        if (atRisk <= 0) {
+          for (let rest = h + 1; rest < hazardBuckets.length; rest += 1) {
+            hazardSeries.push({ hour: rest + 0.5, hazard: 0, atRisk: 0 });
+          }
+          break;
+        }
+      }
+      const smoothed = movingAverage(hazardSeries.map(d => d.hazard), 5);
+      hazardSeries.forEach((d, i) => { d.smooth = smoothed[i]; });
+
+      function survivalAt(time) {
+        const relevant = curve.filter(pt => pt.time <= time);
+        if (!relevant.length) return 1;
+        return relevant[relevant.length - 1].survival;
+      }
+
+      let medianLife = null;
+      for (const pt of curve) {
+        if (pt.survival <= 0.5) {
+          medianLife = pt.time;
+          break;
+        }
+      }
+
+      const survivors72 = survivalRecords.filter(d => d.rawTime >= 72 || !d.event);
+      const deathsBefore72 = survivalRecords.filter(d => d.event && d.rawTime < 72);
+      const surviveMetRate = summarizeRate(survivors72);
+      const dieMetRate = summarizeRate(deathsBefore72);
+
+      return {
+        curve,
+        hazard: hazardSeries,
+        survivalAt,
+        medianLife,
+        surviveMetRate,
+        dieMetRate,
+      };
+    }
+
+    function summarizeRate(records) {
+      const valid = records.filter(d => d.met !== null && d.met !== undefined);
+      if (!valid.length) return { rate: null, total: 0, successes: 0, ci: null };
+      const successes = valid.filter(d => (d.met === true || d.met === 'Yes' || d === true)).length;
+      const total = valid.length;
+      const rate = successes / total;
+      const ci = wilsonInterval(successes, total);
+      return { rate, total, successes, ci };
+    }
+
+    function summarizeRateFromValues(values) {
+      const valid = values.filter(d => d !== null);
+      if (!valid.length) return { rate: null, total: 0, successes: 0, ci: null };
+      const successes = valid.filter(Boolean).length;
+      const total = valid.length;
+      const rate = successes / total;
+      const ci = wilsonInterval(successes, total);
+      return { rate, total, successes, ci };
+    }
+
+    function binFirstInvite(records) {
+      const bins = [
+        { id: '1-2', label: 'messages 1–2', min: -Infinity, max: 2 },
+        { id: '3-5', label: 'messages 3–5', min: 3, max: 5 },
+        { id: '6-10', label: 'messages 6–10', min: 6, max: 10 },
+        { id: '11-20', label: 'messages 11–20', min: 11, max: 20 },
+        { id: '21+', label: '21+ / never', min: 21, max: Infinity },
+      ];
+      const results = [];
+      for (const bin of bins) {
+        for (const concrete of [true, false]) {
+          const subset = records.filter(d => {
+            const idx = d.first_invite_msg_index;
+            const inviteConcrete = d.invite_is_concrete === true;
+            const hasInvite = Number.isFinite(idx);
+            const inBin = hasInvite ? (idx <= bin.max && idx >= bin.min) : bin.id === '21+';
+            const concreteMatch = concrete ? inviteConcrete : !inviteConcrete;
+            if (bin.id === '21+' && !hasInvite) {
+              return concreteMatch === false;
+            }
+            if (!hasInvite) return false;
+            return inBin && concreteMatch;
+          });
+          const metVals = subset.map(d => metValue(d.met)).filter(v => v !== null);
+          const summary = summarizeRateFromValues(metVals);
+          results.push({
+            ...bin,
+            concrete,
+            count: summary.total,
+            successes: summary.successes,
+            rate: summary.rate,
+            ci: summary.ci,
+          });
+        }
+      }
+      return results;
+    }
+
+    function quadrantSummary(records) {
+      const quadrants = [
+        { id: 'short-curious', label: 'Short & Curious', question: 'high', length: 'short' },
+        { id: 'short-silent', label: 'Short & Silent', question: 'low', length: 'short' },
+        { id: 'long-curious', label: 'Long & Curious', question: 'high', length: 'long' },
+        { id: 'long-silent', label: 'Long & Silent', question: 'low', length: 'long' },
+      ];
+      const results = quadrants.map(q => ({ ...q, values: [] }));
+      for (const d of records) {
+        if (d.question_density_first10 === null || d.median_len_first10 === null) continue;
+        const questionsHigh = d.question_density_first10 > 0.3;
+        const lengthLong = d.median_len_first10 > 120;
+        const quadrant = results.find(q =>
+          q.question === (questionsHigh ? 'high' : 'low') &&
+          q.length === (lengthLong ? 'long' : 'short')
+        );
+        if (!quadrant) continue;
+        const met = metValue(d.met);
+        if (met === null) continue;
+        quadrant.values.push(met);
+      }
+      results.forEach(q => {
+        const summary = summarizeRateFromValues(q.values);
+        q.rate = summary.rate;
+        q.count = summary.total;
+      });
+      return results;
+    }
+
+    function delaySummary(records) {
+      const bins = [
+        { id: 'lt10m', label: '<10 minutes', min: 0, max: 10 },
+        { id: '10-60m', label: '10–60 minutes', min: 10, max: 60 },
+        { id: '1-3h', label: '1–3 hours', min: 60, max: 180 },
+        { id: '3-6h', label: '3–6 hours', min: 180, max: 360 },
+        { id: '6-24h', label: '6–24 hours', min: 360, max: 1440 },
+        { id: '1-3d', label: '1–3 days', min: 1440, max: 4320 },
+        { id: 'gt3d', label: '>3 days', min: 4320, max: Infinity },
+      ];
+      const results = bins.map(bin => ({ ...bin, values: [] }));
+      for (const d of records) {
+        const delay = d.first_msg_delay_minutes;
+        if (!Number.isFinite(delay)) continue;
+        const bin = results.find(b => delay >= b.min && delay < b.max);
+        if (!bin) continue;
+        const met = metValue(d.met);
+        if (met === null) continue;
+        bin.values.push(met);
+      }
+      results.forEach(bin => {
+        const summary = summarizeRateFromValues(bin.values);
+        bin.rate = summary.rate;
+        bin.count = summary.total;
+        bin.ci = summary.ci;
+      });
+      return results;
+    }
+
+    function computeInviteTiming(records) {
+      const invites = [];
+      for (const d of records) {
+        const match = parseDate(d.match_time);
+        const firstMsg = parseDate(d.first_msg_time);
+        const lastMsg = parseDate(d.last_msg_time);
+        let inviteTime = null;
+        if (d.first_invite_time) {
+          const parsed = parseDate(d.first_invite_time);
+          if (parsed) inviteTime = parsed;
+        }
+        if (!inviteTime && firstMsg) {
+          inviteTime = firstMsg;
+          if (state.inviteTimingMethod === 'exact') {
+            state.inviteTimingMethod = 'proxied from first message';
+          }
+        }
+        if (!inviteTime && match) {
+          inviteTime = match;
+          if (state.inviteTimingMethod === 'exact') {
+            state.inviteTimingMethod = 'proxied from match time';
+          }
+        }
+        if (!inviteTime && lastMsg) {
+          inviteTime = lastMsg;
+          if (state.inviteTimingMethod === 'exact') {
+            state.inviteTimingMethod = 'proxied from last message';
+          }
+        }
+        if (!inviteTime) continue;
+        invites.push({
+          inviteTime,
+          concrete: d.invite_is_concrete === true,
+        });
+      }
+      return invites;
+    }
+
+    function computeHeatmap(invites, matches, onlyConcrete = true) {
+      const dayHours = Array.from({ length: 7 }, (_, day) => (
+        Array.from({ length: 24 }, (_, hour) => ({ day, hour, invites: 0, matches: 0, propensity: 0 }))
+      ));
+      matches.forEach(date => {
+        if (!date) return;
+        const day = date.getDay();
+        const hour = date.getHours();
+        dayHours[day][hour].matches += 1;
+      });
+      invites.forEach(({ inviteTime, concrete }) => {
+        if (!inviteTime) return;
+        if (onlyConcrete && !concrete) return;
+        const day = inviteTime.getDay();
+        const hour = inviteTime.getHours();
+        dayHours[day][hour].invites += 1;
+      });
+      let maxProp = 0;
+      for (const row of dayHours) {
+        for (const cell of row) {
+          if (cell.matches > 0) {
+            cell.propensity = cell.invites / cell.matches;
+            if (cell.propensity > maxProp) maxProp = cell.propensity;
+          } else {
+            cell.propensity = 0;
+          }
+        }
+      }
+      return { grid: dayHours.flat(), maxProp };
+    }
+
+    function findHotLane(grid) {
+      if (!grid.length) return '—';
+      const grouped = d3.group(grid, d => d.day);
+      let best = { score: -Infinity, day: 0, start: 0, end: 0 };
+      grouped.forEach((cells, day) => {
+        const ordered = cells.slice().sort((a, b) => a.hour - b.hour);
+        for (let h = 0; h < ordered.length; h += 1) {
+          const window = ordered.slice(h, h + 3);
+          if (!window.length) continue;
+          const score = d3.sum(window, d => d.propensity);
+          if (score > best.score) {
+            best = { score, day, start: window[0].hour, end: window[window.length - 1].hour + 1 };
+          }
+        }
+      });
+      if (best.score <= 0) {
+        const topCell = grid.reduce((acc, curr) => (curr.propensity > (acc?.propensity ?? -1) ? curr : acc), null);
+        if (!topCell || !topCell.propensity) return '—';
+        return `${dayLabel(topCell.day)} ${formatHourRange(topCell.hour, topCell.hour + 1)}`;
+      }
+      return `${dayLabel(best.day)} ${formatHourRange(best.start, best.end)}`;
+    }
+
+    function dayLabel(dayIndex) {
+      return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex];
+    }
+
+    function formatHourRange(start, end) {
+      function formatHour(hour) {
+        const suffix = hour >= 12 ? 'pm' : 'am';
+        let hour12 = hour % 12;
+        if (hour12 === 0) hour12 = 12;
+        return `${hour12}${suffix}`;
+      }
+      return `${formatHour(start)}–${formatHour(end)}`;
+    }
+
+    function renderSurvival({ curve, hazard, survivalAt, medianLife, surviveMetRate, dieMetRate }) {
+      const svg = d3.select('#chart-survival');
+      svg.selectAll('*').remove();
+      const width = 740;
+      const height = 420;
+      const margin = { top: 20, right: 16, bottom: 44, left: 52 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const maxTime = 168;
+      const x = d3.scaleLinear().domain([0, maxTime]).range([0, innerWidth]);
+      const y = d3.scaleLinear().domain([0, 1]).range([innerHeight, 0]);
+      const hazardMax = d3.max(hazard, d => d.smooth) || 0.01;
+      const yHazard = d3.scaleLinear().domain([0, hazardMax]).range([innerHeight, innerHeight - innerHeight * 0.4]);
+
+      g.append('g')
+        .attr('class', 'chart-axis')
+        .attr('transform', `translate(0,${innerHeight})`)
+        .call(d3.axisBottom(x).ticks(8).tickFormat(d => `${d}h`));
+
+      g.append('g')
+        .attr('class', 'chart-axis')
+        .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('.0%')));
+
+      g.append('g')
+        .attr('class', 'grid')
+        .selectAll('line')
+        .data([24, 48, 72, 120, 168])
+        .join('line')
+        .attr('x1', d => x(d))
+        .attr('x2', d => x(d))
+        .attr('y1', 0)
+        .attr('y2', innerHeight)
+        .attr('stroke', '#E0E0E0')
+        .attr('stroke-dasharray', d => (d === 48 ? '4 4' : '2 4'))
+        .attr('stroke-width', d => (d === 48 ? 1.5 : 1));
+
+      const hazardArea = d3.area()
+        .x(d => x(d.hour))
+        .y0(innerHeight)
+        .y1(d => yHazard(d.smooth || 0));
+
+      g.append('path')
+        .datum(hazard)
+        .attr('class', 'hazard-area')
+        .attr('d', hazardArea)
+        .attr('opacity', 0.8);
+
+      const sampledCurve = d3.range(0, maxTime + 0.5, 0.5).map(t => ({ hour: t, survival: survivalAt(t) }));
+
+      const line = d3.line()
+        .x(d => x(d.hour))
+        .y(d => y(d.survival));
+
+      g.append('path')
+        .datum(sampledCurve)
+        .attr('class', 'survival-line')
+        .attr('d', line);
+
+      g.selectAll('.survival-marker')
+        .data([24, 48, 72].map(hour => ({ hour, survival: survivalAt(hour) })))
+        .join('circle')
+        .attr('class', 'survival-marker')
+        .attr('r', 5)
+        .attr('cx', d => x(d.hour))
+        .attr('cy', d => y(d.survival));
+
+      const focusLine = g.append('line')
+        .attr('stroke', '#C92C2C')
+        .attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', '4 4')
+        .style('opacity', 0);
+
+      svg.on('mousemove', (event) => {
+        const [mx] = d3.pointer(event, g.node());
+        const hour = clamp(x.invert(mx), 0, maxTime);
+        const survivalVal = survivalAt(hour);
+        focusLine
+          .attr('x1', x(hour))
+          .attr('x2', x(hour))
+          .attr('y1', 0)
+          .attr('y2', innerHeight)
+          .style('opacity', 1);
+        showTooltip(`<strong>${hour.toFixed(1)} hours</strong><br />Survival: ${(survivalVal * 100).toFixed(1)}%`, event);
+      }).on('mouseleave', () => {
+        focusLine.style('opacity', 0);
+        hideTooltip();
+      });
+
+      updateSurvivalStats({ survivalAt, medianLife, surviveMetRate, dieMetRate });
+    }
+
+    function updateSurvivalStats({ survivalAt, medianLife, surviveMetRate, dieMetRate }) {
+      const median = document.getElementById('stat-median-life');
+      const surv24 = document.getElementById('stat-surv-24');
+      const surv48 = document.getElementById('stat-surv-48');
+      const lift = document.getElementById('stat-lift-survive72');
+
+      median.textContent = medianLife ? Math.round(medianLife) : '—';
+      surv24.textContent = formatPercent(survivalAt(24), 0);
+      surv48.textContent = formatPercent(survivalAt(48), 0);
+
+      const surviveRate = surviveMetRate?.rate;
+      const dieRate = dieMetRate?.rate;
+      const ratio = (surviveRate !== null && dieRate !== null && dieRate > 0) ? surviveRate / dieRate : null;
+      lift.textContent = ratio ? ratio.toFixed(1) : '—';
+    }
+
+    function renderInviteChart(inviteData) {
+      const svg = d3.select('#chart-invite');
+      svg.selectAll('*').remove();
+      const width = 740;
+      const height = 420;
+      const margin = { top: 24, right: 16, bottom: 72, left: 60 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const filtered = state.concreteOnly ? inviteData.filter(d => d.concrete) : inviteData;
+      const bins = Array.from(new Set(filtered.map(d => d.id)));
+
+      const x = d3.scaleBand().domain(bins).range([0, innerWidth]).padding(0.3);
+      const groups = d3.scaleBand().domain(state.concreteOnly ? ['concrete'] : ['concrete', 'non']).range([0, x.bandwidth()]).padding(0.15);
+
+      const yMax = d3.max(filtered, d => d.rate || 0) || 0.05;
+      const y = d3.scaleLinear().domain([0, Math.max(0.1, yMax * 1.2)]).range([innerHeight, 0]);
+
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      g.append('g')
+        .attr('class', 'chart-axis')
+        .attr('transform', `translate(0,${innerHeight})`)
+        .call(d3.axisBottom(x).tickFormat(id => inviteData.find(d => d.id === id)?.label || id))
+        .selectAll('text')
+        .attr('transform', 'rotate(-20)')
+        .style('text-anchor', 'end');
+
+      g.append('g')
+        .attr('class', 'chart-axis')
+        .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('.0%')));
+
+      const barGroups = g.selectAll('.bar-group')
+        .data(filtered)
+        .join('g')
+        .attr('transform', d => `translate(${x(d.id) + (state.concreteOnly ? 0 : (d.concrete ? groups('concrete') : groups('non')))},0)`);
+
+      barGroups.append('rect')
+        .attr('x', 0)
+        .attr('y', d => d.rate !== null ? y(d.rate) : innerHeight)
+        .attr('width', state.concreteOnly ? x.bandwidth() : groups.bandwidth())
+        .attr('height', d => d.rate !== null ? innerHeight - y(d.rate) : 0)
+        .attr('class', d => d.concrete ? 'bar-concrete' : 'bar-nonconcrete')
+        .attr('opacity', d => (d.rate !== null ? 1 : 0.2))
+        .on('mousemove', (event, d) => {
+          if (d.rate === null) return;
+          const ci = d.ci ? `${(d.ci.lower * 100).toFixed(1)}%–${(d.ci.upper * 100).toFixed(1)}%` : '—';
+          showTooltip(`<strong>${d.label}</strong><br />${d.concrete ? 'Concrete invite' : 'Loose invite'}<br />Meet: ${(d.rate * 100).toFixed(1)}%<br />95% CI: ${ci}<br />n = ${d.count}`, event);
+        })
+        .on('mousemove', moveTooltip)
+        .on('mouseleave', hideTooltip);
+
+      barGroups.filter(d => d.rate !== null && d.ci)
+        .append('line')
+        .attr('class', 'error-line')
+        .attr('x1', (state.concreteOnly ? x.bandwidth() : groups.bandwidth()) / 2)
+        .attr('x2', (state.concreteOnly ? x.bandwidth() : groups.bandwidth()) / 2)
+        .attr('y1', d => y(d.ci.lower))
+        .attr('y2', d => y(d.ci.upper));
+
+      if (!state.concreteOnly) {
+        const legend = g.append('g').attr('transform', `translate(${innerWidth - 140},-10)`);
+        const entries = [
+          { label: 'Concrete', class: 'bar-concrete' },
+          { label: 'Non-concrete', class: 'bar-nonconcrete' },
+        ];
+        legend.selectAll('rect')
+          .data(entries)
+          .join('rect')
+          .attr('x', 0)
+          .attr('y', (d, i) => i * 20)
+          .attr('width', 12)
+          .attr('height', 12)
+          .attr('class', d => d.class);
+        legend.selectAll('text')
+          .data(entries)
+          .join('text')
+          .attr('x', 18)
+          .attr('y', (d, i) => i * 20 + 10)
+          .text(d => d.label)
+          .attr('font-size', 12)
+          .attr('font-family', 'Libre Franklin, sans-serif');
+      }
+    }
+
+    function renderQuadrants(data) {
+      const svg = d3.select('#chart-curiosity');
+      svg.selectAll('*').remove();
+      const width = 740;
+      const height = 360;
+      const margin = { top: 32, right: 16, bottom: 40, left: 48 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+      const cols = ['short', 'long'];
+      const rows = ['high', 'low'];
+
+      const x = d3.scaleBand().domain(cols).range([0, innerWidth]).padding(0.1);
+      const y = d3.scaleBand().domain(rows).range([0, innerHeight]).padding(0.1);
+
+      const rateValues = data.map(d => d.rate || 0);
+      const color = d3.scaleSequential(d3.interpolateRgbBasis(['#eef5f6', '#2A7F8E']))
+        .domain([0, d3.max(rateValues) || 0.1]);
+
+      const quadrantGroup = g.selectAll('.quadrant')
+        .data(data)
+        .join('g')
+        .attr('class', 'quadrant')
+        .attr('transform', d => `translate(${x(d.length)},${y(d.question)})`);
+
+      quadrantGroup.append('rect')
+        .attr('width', x.bandwidth())
+        .attr('height', y.bandwidth())
+        .attr('fill', d => (d.rate !== null ? color(d.rate) : '#f5f5f3'))
+        .attr('class', 'heat-rect')
+        .on('mousemove', (event, d) => {
+          if (d.rate === null) return;
+          showTooltip(`<strong>${d.label}</strong><br />Meet: ${(d.rate * 100).toFixed(1)}%<br />n = ${d.count}`, event);
+        })
+        .on('mousemove', moveTooltip)
+        .on('mouseleave', hideTooltip);
+
+      quadrantGroup.append('text')
+        .attr('x', x.bandwidth() / 2)
+        .attr('y', y.bandwidth() / 2 - 6)
+        .attr('text-anchor', 'middle')
+        .attr('font-family', 'Libre Franklin, sans-serif')
+        .attr('font-weight', 700)
+        .attr('font-size', 16)
+        .attr('fill', d => (d.rate && d.rate > 0.12 ? '#fff' : '#111'))
+        .text(d => d.label);
+
+      quadrantGroup.append('text')
+        .attr('x', x.bandwidth() / 2)
+        .attr('y', y.bandwidth() / 2 + 18)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 12)
+        .text(d => (d.rate !== null ? `${(d.rate * 100).toFixed(0)}%` : '—'));
+
+      g.append('text')
+        .attr('x', innerWidth / 2)
+        .attr('y', innerHeight + 30)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 12)
+        .text('Message length (first 10 messages)');
+
+      g.append('text')
+        .attr('x', -innerHeight / 2)
+        .attr('y', -28)
+        .attr('transform', 'rotate(-90)')
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 12)
+        .text('Question density');
+    }
+
+    function renderDelayChart(data) {
+      const svg = d3.select('#chart-delay');
+      svg.selectAll('*').remove();
+      const width = 740;
+      const height = 420;
+      const margin = { top: 24, right: 16, bottom: 72, left: 60 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const x = d3.scaleBand().domain(data.map(d => d.id)).range([0, innerWidth]).padding(0.25);
+      const yMax = d3.max(data, d => d.rate || 0) || 0.05;
+      const y = d3.scaleLinear().domain([0, Math.max(0.15, yMax * 1.2)]).range([innerHeight, 0]);
+
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      g.append('g')
+        .attr('class', 'chart-axis')
+        .attr('transform', `translate(0,${innerHeight})`)
+        .call(d3.axisBottom(x).tickFormat(id => data.find(d => d.id === id)?.label || id))
+        .selectAll('text')
+        .attr('transform', 'rotate(-20)')
+        .style('text-anchor', 'end');
+
+      g.append('g')
+        .attr('class', 'chart-axis')
+        .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('.0%')));
+
+      g.append('g')
+        .attr('class', 'grid-line')
+        .selectAll('line')
+        .data(y.ticks(4))
+        .join('line')
+        .attr('x1', 0)
+        .attr('x2', innerWidth)
+        .attr('y1', d => y(d))
+        .attr('y2', d => y(d))
+        .attr('stroke', '#E0E0E0');
+
+      g.selectAll('rect')
+        .data(data)
+        .join('rect')
+        .attr('x', d => x(d.id))
+        .attr('y', d => d.rate !== null ? y(d.rate) : innerHeight)
+        .attr('width', x.bandwidth())
+        .attr('height', d => d.rate !== null ? innerHeight - y(d.rate) : 0)
+        .attr('fill', '#2A7F8E')
+        .attr('opacity', 0.6)
+        .on('mousemove', (event, d) => {
+          if (d.rate === null) return;
+          const ci = d.ci ? `${(d.ci.lower * 100).toFixed(1)}%–${(d.ci.upper * 100).toFixed(1)}%` : '—';
+          showTooltip(`<strong>${d.label}</strong><br />Meet: ${(d.rate * 100).toFixed(1)}%<br />95% CI: ${ci}<br />n = ${d.count}`, event);
+        })
+        .on('mousemove', moveTooltip)
+        .on('mouseleave', hideTooltip);
+
+      g.selectAll('.delay-error')
+        .data(data.filter(d => d.ci))
+        .join('line')
+        .attr('class', 'error-line delay-error')
+        .attr('x1', d => x(d.id) + x.bandwidth() / 2)
+        .attr('x2', d => x(d.id) + x.bandwidth() / 2)
+        .attr('y1', d => y(d.ci.lower))
+        .attr('y2', d => y(d.ci.upper));
+    }
+
+    function renderHeatmap(gridData, note) {
+      const svg = d3.select('#chart-heatmap');
+      svg.selectAll('*').remove();
+      const width = 740;
+      const height = 480;
+      const margin = { top: 40, right: 16, bottom: 60, left: 90 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const x = d3.scaleBand().domain(d3.range(24)).range([0, innerWidth]);
+      const y = d3.scaleBand().domain(d3.range(7)).range([0, innerHeight]).paddingInner(0.05);
+
+      const color = d3.scaleSequential(d3.interpolateRgbBasis(['#f0f6f7', '#2A7F8E']))
+        .domain([0, gridData.maxProp || 0.01]);
+
+      g.selectAll('rect')
+        .data(gridData.grid)
+        .join('rect')
+        .attr('class', 'heat-rect')
+        .attr('x', d => x(d.hour))
+        .attr('y', d => y(d.day))
+        .attr('width', x.bandwidth())
+        .attr('height', y.bandwidth())
+        .attr('fill', d => color(d.propensity || 0))
+        .on('mousemove', (event, d) => {
+          showTooltip(`${dayLabel(d.day)} ${formatHourRange(d.hour, d.hour + 1)}<br />Invite propensity: ${(d.propensity * 100).toFixed(2)}%<br />Invites: ${d.invites}<br />Matches: ${d.matches}`, event);
+        })
+        .on('mousemove', moveTooltip)
+        .on('mouseleave', hideTooltip);
+
+      g.append('g')
+        .attr('class', 'chart-axis')
+        .attr('transform', `translate(0,${innerHeight})`)
+        .call(d3.axisBottom(x).tickValues([0, 6, 12, 18, 23]).tickFormat(h => formatHourRange(h, h + 1)));
+
+      g.append('g')
+        .attr('class', 'chart-axis')
+        .call(d3.axisLeft(y).tickFormat(day => days[day]));
+
+      const gradientLabel = svg.append('g').attr('transform', `translate(${width - 160},${margin.top})`);
+      const gradient = gradientLabel.append('defs').append('linearGradient')
+        .attr('id', 'heatmap-gradient')
+        .attr('x1', '0%').attr('x2', '0%').attr('y1', '0%').attr('y2', '100%');
+      gradient.append('stop').attr('offset', '0%').attr('stop-color', '#2A7F8E');
+      gradient.append('stop').attr('offset', '100%').attr('stop-color', '#f0f6f7');
+
+      gradientLabel.append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', 14)
+        .attr('height', 120)
+        .attr('fill', 'url(#heatmap-gradient)');
+
+      gradientLabel.append('text')
+        .attr('x', 24)
+        .attr('y', 12)
+        .attr('font-size', 12)
+        .text('Higher invite propensity');
+
+      gradientLabel.append('text')
+        .attr('x', 24)
+        .attr('y', 120)
+        .attr('font-size', 12)
+        .text('Lower');
+
+      if (note) {
+        svg.append('text')
+          .attr('x', margin.left)
+          .attr('y', height - 16)
+          .attr('font-size', 12)
+          .attr('fill', '#555')
+          .text(note);
+      }
+    }
+
+    function fillInviteStats(inviteData) {
+      const concreteOnly = inviteData.filter(d => d.concrete && d.rate !== null);
+      let best = concreteOnly.reduce((acc, curr) => (curr.rate > (acc?.rate ?? -1) ? curr : acc), null);
+      if (!best) {
+        const fallback = inviteData.find(d => d.rate !== null);
+        best = fallback || { label: '—' };
+      }
+      document.getElementById('stat-best-invite-bin').textContent = best.label || '—';
+    }
+
+    function fillQuadrantStats(quadrants) {
+      const shortCurious = quadrants.find(q => q.id === 'short-curious');
+      const longSilent = quadrants.find(q => q.id === 'long-silent');
+      document.getElementById('stat-short-curious-rate').textContent = shortCurious && shortCurious.rate !== null ? (shortCurious.rate * 100).toFixed(0) : '—';
+      document.getElementById('stat-long-silent-rate').textContent = longSilent && longSilent.rate !== null ? (longSilent.rate * 100).toFixed(0) : '—';
+    }
+
+    function fillDelayStats(delays) {
+      const valid = delays.filter(d => d.rate !== null);
+      const peak = valid.reduce((acc, curr) => (curr.rate > (acc?.rate ?? -1) ? curr : acc), null);
+      if (peak) {
+        document.getElementById('stat-sweet-spot').textContent = peak.label;
+        document.getElementById('stat-peak-delay-rate').textContent = (peak.rate * 100).toFixed(0);
+      } else {
+        document.getElementById('stat-sweet-spot').textContent = '—';
+        document.getElementById('stat-peak-delay-rate').textContent = '—';
+      }
+    }
+
+    function updateHotLaneText(grid) {
+      const label = findHotLane(grid.grid);
+      document.getElementById('stat-hotlane').textContent = label;
+    }
+
+    function handleToggleMethods() {
+      const button = document.getElementById('toggle-methods');
+      const body = document.getElementById('methods-body');
+      button.addEventListener('click', () => {
+        const expanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', String(!expanded));
+        body.hidden = expanded;
+      });
+    }
+
+    function setupObserver() {
+      const steps = document.querySelectorAll('article.step');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-active');
+          }
+        });
+      }, { threshold: 0.55 });
+      steps.forEach(step => observer.observe(step));
+    }
+
+    function updateToggleIndicator() {
+      if (!toggleIndicator) return;
+      toggleIndicator.textContent = state.concreteOnly ? 'Concrete invites only' : 'All invites';
+    }
+
+    function setupKeyboard(inviteData, heatmapDatasets) {
+      document.addEventListener('keydown', (event) => {
+        if (event.key.toLowerCase() === 'c') {
+          state.concreteOnly = !state.concreteOnly;
+          updateToggleIndicator();
+          renderInviteChart(inviteData);
+          const heatmapData = state.concreteOnly ? heatmapDatasets.concrete : heatmapDatasets.all;
+          const note = state.concreteOnly ? `Concrete invites (${state.inviteTimingMethod})` : `All invites (${state.inviteTimingMethod})`;
+          renderHeatmap(heatmapData, note);
+          updateHotLaneText(heatmapData);
+        }
+      });
+    }
+
+    function hydrateStory(data) {
+      const survival = computeSurvival(data);
+      renderSurvival(survival);
+
+      const inviteData = binFirstInvite(data);
+      renderInviteChart(inviteData);
+      fillInviteStats(inviteData);
+
+      const quadrants = quadrantSummary(data);
+      renderQuadrants(quadrants);
+      fillQuadrantStats(quadrants);
+
+      const delays = delaySummary(data);
+      renderDelayChart(delays);
+      fillDelayStats(delays);
+
+      const matches = data.map(d => parseDate(d.match_time)).filter(Boolean);
+      const invites = computeInviteTiming(data);
+      const heatmapConcrete = computeHeatmap(invites, matches, true);
+      const heatmapAll = computeHeatmap(invites, matches, false);
+      updateHotLaneText(heatmapConcrete);
+      const note = `Concrete invites (${state.inviteTimingMethod})`;
+      renderHeatmap(heatmapConcrete, note);
+
+      setupKeyboard(inviteData, { concrete: heatmapConcrete, all: heatmapAll });
+    }
+
+    function loadData() {
+      fetch('./data/conversations_features.min.json')
+        .then(response => response.json())
+        .then(json => {
+          state.data = json;
+          hydrateStory(json);
+        })
+        .catch(err => {
+          console.error('Failed to load data', err);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      handleToggleMethods();
+      setupObserver();
+      updateToggleIndicator();
+      loadData();
+    });
+  </script>
+</body>
+</html>
