@@ -334,6 +334,14 @@
       data: [],
     };
 
+    const INVITE_BINS = [
+      { id: '1-2', label: 'messages 1–2', min: -Infinity, max: 2 },
+      { id: '3-5', label: 'messages 3–5', min: 3, max: 5 },
+      { id: '6-10', label: 'messages 6–10', min: 6, max: 10 },
+      { id: '11-20', label: 'messages 11–20', min: 11, max: 20 },
+      { id: '21+', label: '21+ / never', min: 21, max: Infinity },
+    ];
+
     const tooltip = document.getElementById('tooltip');
     const toggleIndicator = document.querySelector('.toggle-indicator');
 
@@ -557,41 +565,43 @@
     }
 
     function binFirstInvite(records) {
-      const bins = [
-        { id: '1-2', label: 'messages 1–2', min: -Infinity, max: 2 },
-        { id: '3-5', label: 'messages 3–5', min: 3, max: 5 },
-        { id: '6-10', label: 'messages 6–10', min: 6, max: 10 },
-        { id: '11-20', label: 'messages 11–20', min: 11, max: 20 },
-        { id: '21+', label: '21+ / never', min: 21, max: Infinity },
-      ];
       const results = [];
-      for (const bin of bins) {
-        for (const concrete of [true, false]) {
-          const subset = records.filter(d => {
-            const idx = d.first_invite_msg_index;
-            const inviteConcrete = d.invite_is_concrete === true;
-            const hasInvite = Number.isFinite(idx);
-            const inBin = hasInvite ? (idx <= bin.max && idx >= bin.min) : bin.id === '21+';
-            const concreteMatch = concrete ? inviteConcrete : !inviteConcrete;
-            if (bin.id === '21+' && !hasInvite) {
-              return concreteMatch === false;
-            }
-            if (!hasInvite) return false;
-            return inBin && concreteMatch;
-          });
-          const metVals = subset.map(d => metValue(d.met)).filter(v => v !== null);
-          const summary = summarizeRateFromValues(metVals);
-          results.push({
-            ...bin,
-            concrete,
-            count: summary.total,
-            successes: summary.successes,
-            rate: summary.rate,
-            ci: summary.ci,
-          });
-        }
+      INVITE_BINS.forEach(bin => {
+        results.push({ ...bin, concrete: true, values: [] });
+        results.push({ ...bin, concrete: false, values: [] });
+      });
+
+      function findBin(index) {
+        if (!Number.isFinite(index)) return INVITE_BINS[INVITE_BINS.length - 1];
+        return INVITE_BINS.find(bin => index >= (Number.isFinite(bin.min) ? bin.min : -Infinity) && index <= bin.max) || INVITE_BINS[INVITE_BINS.length - 1];
       }
-      return results;
+
+      records.forEach(d => {
+        const idx = Number.isFinite(d.first_invite_msg_index) ? d.first_invite_msg_index : null;
+        const hasInvite = idx !== null;
+        const bin = findBin(idx);
+        const isConcrete = hasInvite ? d.invite_is_concrete === true : false;
+        const target = results.find(r => r.id === bin.id && r.concrete === isConcrete);
+        if (!target) return;
+        const met = metValue(d.met);
+        if (met === null) return;
+        target.values.push(met);
+      });
+
+      return results.map(result => {
+        const summary = summarizeRateFromValues(result.values || []);
+        return {
+          id: result.id,
+          label: result.label,
+          min: result.min,
+          max: result.max,
+          concrete: result.concrete,
+          count: summary.total,
+          successes: summary.successes,
+          rate: summary.rate,
+          ci: summary.ci,
+        };
+      });
     }
 
     function quadrantSummary(records) {
@@ -654,6 +664,7 @@
 
     function computeInviteTiming(records) {
       const invites = [];
+      const methodsUsed = new Set();
       for (const d of records) {
         const match = parseDate(d.match_time);
         const firstMsg = parseDate(d.first_msg_time);
@@ -661,31 +672,38 @@
         let inviteTime = null;
         if (d.first_invite_time) {
           const parsed = parseDate(d.first_invite_time);
-          if (parsed) inviteTime = parsed;
+          if (parsed) {
+            inviteTime = parsed;
+            methodsUsed.add('Exact timestamp');
+          }
         }
         if (!inviteTime && firstMsg) {
           inviteTime = firstMsg;
-          if (state.inviteTimingMethod === 'exact') {
-            state.inviteTimingMethod = 'proxied from first message';
-          }
+          methodsUsed.add('First message proxy');
         }
         if (!inviteTime && match) {
           inviteTime = match;
-          if (state.inviteTimingMethod === 'exact') {
-            state.inviteTimingMethod = 'proxied from match time';
-          }
+          methodsUsed.add('Match time proxy');
         }
         if (!inviteTime && lastMsg) {
           inviteTime = lastMsg;
-          if (state.inviteTimingMethod === 'exact') {
-            state.inviteTimingMethod = 'proxied from last message';
-          }
+          methodsUsed.add('Last message proxy');
         }
         if (!inviteTime) continue;
         invites.push({
           inviteTime,
           concrete: d.invite_is_concrete === true,
         });
+      }
+      if (methodsUsed.size === 0) {
+        state.inviteTimingMethod = 'No timestamp available';
+      } else if (methodsUsed.size === 1) {
+        state.inviteTimingMethod = Array.from(methodsUsed)[0];
+      } else if (methodsUsed.has('Exact timestamp') && methodsUsed.size === 2) {
+        const other = Array.from(methodsUsed).find(method => method !== 'Exact timestamp');
+        state.inviteTimingMethod = other ? `Exact timestamp + ${other}` : 'Exact timestamp';
+      } else {
+        state.inviteTimingMethod = 'Mixed timing estimates';
       }
       return invites;
     }
@@ -881,10 +899,13 @@
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
 
-      const filtered = state.concreteOnly ? inviteData.filter(d => d.concrete) : inviteData;
-      const bins = Array.from(new Set(filtered.map(d => d.id)));
+      const labelById = new Map(INVITE_BINS.map(bin => [bin.id, bin.label]));
+      const binOrder = INVITE_BINS.map(bin => bin.id);
 
-      const x = d3.scaleBand().domain(bins).range([0, innerWidth]).padding(0.3);
+      const filtered = (state.concreteOnly ? inviteData.filter(d => d.concrete) : inviteData)
+        .filter(d => binOrder.includes(d.id));
+
+      const x = d3.scaleBand().domain(binOrder).range([0, innerWidth]).padding(0.3);
       const groups = d3.scaleBand().domain(state.concreteOnly ? ['concrete'] : ['concrete', 'non']).range([0, x.bandwidth()]).padding(0.15);
 
       const yMax = d3.max(filtered, d => d.rate || 0) || 0.05;
@@ -895,7 +916,7 @@
       g.append('g')
         .attr('class', 'chart-axis')
         .attr('transform', `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(x).tickFormat(id => inviteData.find(d => d.id === id)?.label || id))
+        .call(d3.axisBottom(x).tickFormat(id => labelById.get(id) || id))
         .selectAll('text')
         .attr('transform', 'rotate(-20)')
         .style('text-anchor', 'end');
@@ -904,10 +925,17 @@
         .attr('class', 'chart-axis')
         .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('.0%')));
 
+      const drawable = filtered.filter(d => x(d.id) !== undefined);
+
       const barGroups = g.selectAll('.bar-group')
-        .data(filtered)
+        .data(drawable)
         .join('g')
-        .attr('transform', d => `translate(${x(d.id) + (state.concreteOnly ? 0 : (d.concrete ? groups('concrete') : groups('non')))},0)`);
+        .attr('class', 'bar-group')
+        .attr('transform', d => {
+          const base = x(d.id) ?? 0;
+          const offset = state.concreteOnly ? 0 : (d.concrete ? groups('concrete') : groups('non'));
+          return `translate(${base + (offset ?? 0)},0)`;
+        });
 
       barGroups.append('rect')
         .attr('x', 0)
@@ -1197,12 +1225,23 @@
     function fillDelayStats(delays) {
       const valid = delays.filter(d => d.rate !== null);
       const peak = valid.reduce((acc, curr) => (curr.rate > (acc?.rate ?? -1) ? curr : acc), null);
+      const chart = document.getElementById('chart-delay');
       if (peak) {
         document.getElementById('stat-sweet-spot').textContent = peak.label;
         document.getElementById('stat-peak-delay-rate').textContent = (peak.rate * 100).toFixed(0);
+        if (chart) {
+          const peakIndex = valid.findIndex(d => d.id === peak.id);
+          const isInterior = peakIndex > 0 && peakIndex < valid.length - 1;
+          const leftLower = valid.slice(0, peakIndex).every(d => d.rate < peak.rate);
+          const rightLower = valid.slice(peakIndex + 1).every(d => d.rate < peak.rate);
+          chart.dataset.shape = isInterior && leftLower && rightLower ? 'u-shaped' : 'other';
+        }
       } else {
         document.getElementById('stat-sweet-spot').textContent = '—';
         document.getElementById('stat-peak-delay-rate').textContent = '—';
+        if (chart) {
+          chart.dataset.shape = 'insufficient-data';
+        }
       }
     }
 
@@ -1234,6 +1273,7 @@
     }
 
     function updateToggleIndicator() {
+      if (!toggleIndicator) return;
       toggleIndicator.textContent = state.concreteOnly ? 'Concrete invites only' : 'All invites';
     }
 
