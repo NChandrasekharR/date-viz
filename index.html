@@ -1292,49 +1292,90 @@
     }
 
     function hydrateStory(data) {
-      const survival = computeSurvival(data);
-      renderSurvival(survival);
+      console.log('hydrateStory called with', data.length, 'records');
 
-      const inviteData = binFirstInvite(data);
-      renderInviteChart(inviteData);
-      fillInviteStats(inviteData);
+      try {
+        console.log('Computing survival...');
+        const survival = computeSurvival(data);
+        console.log('Rendering survival chart...');
+        renderSurvival(survival);
 
-      const quadrants = quadrantSummary(data);
-      renderQuadrants(quadrants);
-      fillQuadrantStats(quadrants);
+        console.log('Binning invites...');
+        const inviteData = binFirstInvite(data);
+        console.log('Rendering invite chart...');
+        renderInviteChart(inviteData);
+        fillInviteStats(inviteData);
 
-      const delays = delaySummary(data);
-      renderDelayChart(delays);
-      fillDelayStats(delays);
+        console.log('Computing quadrants...');
+        const quadrants = quadrantSummary(data);
+        console.log('Rendering quadrants...');
+        renderQuadrants(quadrants);
+        fillQuadrantStats(quadrants);
 
-      const matches = data.map(d => parseDate(d.match_time)).filter(Boolean);
-      const invites = computeInviteTiming(data);
-      const heatmapConcrete = computeHeatmap(invites, matches, true);
-      const heatmapAll = computeHeatmap(invites, matches, false);
-      updateHotLaneText(heatmapConcrete);
-      const note = `Concrete invites (${state.inviteTimingMethod})`;
-      renderHeatmap(heatmapConcrete, note);
+        console.log('Computing delays...');
+        const delays = delaySummary(data);
+        console.log('Rendering delay chart...');
+        renderDelayChart(delays);
+        fillDelayStats(delays);
 
-      setupKeyboard(inviteData, { concrete: heatmapConcrete, all: heatmapAll });
+        console.log('Computing heatmap...');
+        const matches = data.map(d => parseDate(d.match_time)).filter(Boolean);
+        const invites = computeInviteTiming(data);
+        const heatmapConcrete = computeHeatmap(invites, matches, true);
+        const heatmapAll = computeHeatmap(invites, matches, false);
+        updateHotLaneText(heatmapConcrete);
+        const note = `Concrete invites (${state.inviteTimingMethod})`;
+        console.log('Rendering heatmap...');
+        renderHeatmap(heatmapConcrete, note);
+
+        console.log('Setting up keyboard...');
+        setupKeyboard(inviteData, { concrete: heatmapConcrete, all: heatmapAll });
+
+        console.log('All charts rendered successfully!');
+      } catch (error) {
+        console.error('Error in hydrateStory:', error);
+        console.error('Stack trace:', error.stack);
+      }
     }
 
     function loadData() {
+      console.log('Fetching data from: ./data/conversations_features.min.json');
       fetch('./data/conversations_features.min.json')
-        .then(response => response.json())
+        .then(response => {
+          console.log('Fetch response:', response.status, response.statusText);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then(json => {
+          console.log('Data loaded successfully, records:', json.length);
           state.data = json;
           hydrateStory(json);
         })
         .catch(err => {
           console.error('Failed to load data', err);
+          console.error('Error details:', err.message, err.stack);
         });
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      handleToggleMethods();
-      setupObserver();
-      updateToggleIndicator();
-      loadData();
+      console.log('DOM loaded, checking D3...', typeof d3);
+      if (typeof d3 === 'undefined') {
+        console.error('D3 library not loaded!');
+        return;
+      }
+      console.log('D3 loaded successfully, version:', d3.version);
+
+      try {
+        handleToggleMethods();
+        setupObserver();
+        updateToggleIndicator();
+        console.log('Starting data load...');
+        loadData();
+      } catch (error) {
+        console.error('Initialization error:', error);
+      }
     });
   </script>
 </body>
