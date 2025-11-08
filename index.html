@@ -225,6 +225,75 @@
       z-index: 30;
     }
 
+    /* Personal Stats Dashboard */
+    .personal-stats {
+      max-width: 740px;
+      margin: 0 auto 64px;
+      padding: 32px 24px;
+      background: linear-gradient(135deg, #2A7F8E 0%, #1a5f6b 100%);
+      border-radius: 12px;
+      color: #fff;
+    }
+
+    .personal-stats h2 {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 1.8rem;
+      margin: 0 0 24px;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-value {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin: 0 0 4px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin: 0;
+    }
+
+    .insight-box {
+      background: rgba(255, 255, 255, 0.1);
+      border-left: 4px solid #C92C2C;
+      padding: 16px;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+
+    .insight-box h3 {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 1rem;
+      margin: 0 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
     @media (max-width: 768px) {
       header.hero {
         padding-top: 48px;
@@ -241,6 +310,12 @@
         transform: translateX(-50%);
         top: 12px;
       }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .stat-value {
+        font-size: 1.8rem;
+      }
     }
   </style>
 </head>
@@ -251,6 +326,37 @@
     <h1>Most Hinge Chats Die in 48 Hours</h1>
     <p class="dek">Across six years of swipes and chats, the odds of staying alive plunge after two days. Survive that window and your chance of meeting jumps.</p>
   </header>
+
+  <section class="personal-stats">
+    <h2>Your Personal Journey</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <p class="stat-value" id="personal-total">—</p>
+        <p class="stat-label">Conversations</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-value" id="personal-met">—</p>
+        <p class="stat-label">Met in Person</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-value" id="personal-rate">—</p>
+        <p class="stat-label">Success Rate</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-value" id="personal-timing">—</p>
+        <p class="stat-label">Avg Invite Msg #</p>
+      </div>
+    </div>
+    <div class="insight-box">
+      <h3>What Works For You</h3>
+      <p id="personal-insight">Loading your personal insights...</p>
+    </div>
+    <div style="margin-top: 24px;">
+      <h3 style="font-family: 'Libre Franklin', sans-serif; font-size: 1rem; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.05em;">Your Activity Timeline</h3>
+      <svg id="timeline-chart" role="img" aria-label="Your activity over time"></svg>
+      <p style="font-size: 0.85rem; margin: 8px 0 0; opacity: 0.9;" id="timeline-summary">Loading timeline...</p>
+    </div>
+  </section>
 
   <section id="scrolly">
     <article class="step">
@@ -1318,6 +1424,123 @@
       setupKeyboard(inviteData, { concrete: heatmapConcrete, all: heatmapAll });
     }
 
+    function renderTimeline(data) {
+      const svg = d3.select('#timeline-chart');
+      svg.selectAll('*').remove();
+
+      const width = 696;
+      const height = 120;
+      const margin = { top: 10, right: 0, bottom: 30, left: 40 };
+
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const monthlyData = data.by_month.slice(-12); // Last 12 months
+
+      const x = d3.scaleBand()
+        .domain(monthlyData.map(d => d.month))
+        .range([0, innerWidth])
+        .padding(0.2);
+
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(monthlyData, d => d.count) || 100])
+        .range([innerHeight, 0]);
+
+      g.selectAll('rect')
+        .data(monthlyData)
+        .join('rect')
+        .attr('x', d => x(d.month))
+        .attr('y', d => y(d.count))
+        .attr('width', x.bandwidth())
+        .attr('height', d => innerHeight - y(d.count))
+        .attr('fill', 'rgba(255, 255, 255, 0.6)')
+        .attr('rx', 2);
+
+      g.append('g')
+        .attr('transform', `translate(0,${innerHeight})`)
+        .call(d3.axisBottom(x).tickFormat(d => {
+          const [year, month] = d.split('-');
+          return `${month}/${year.slice(2)}`;
+        }))
+        .selectAll('text')
+        .attr('fill', '#fff')
+        .style('font-size', '0.7rem');
+
+      g.append('g')
+        .call(d3.axisLeft(y).ticks(3))
+        .selectAll('text')
+        .attr('fill', '#fff')
+        .style('font-size', '0.7rem');
+
+      g.selectAll('.domain, .tick line')
+        .attr('stroke', 'rgba(255, 255, 255, 0.3)');
+    }
+
+    function loadPersonalStats() {
+      fetch('./data/personal_stats.json')
+        .then(response => response.json())
+        .then(stats => {
+          document.getElementById('personal-total').textContent = stats.total_conversations;
+          document.getElementById('personal-met').textContent = stats.met_count;
+          document.getElementById('personal-rate').textContent = `${stats.meet_rate}%`;
+          document.getElementById('personal-timing').textContent = stats.avg_invite_index ? `#${stats.avg_invite_index}` : '—';
+
+          // Generate personalized insight
+          let insight = `Your success rate of ${stats.meet_rate}% is `;
+          insight += stats.meet_rate >= 50 ? 'excellent! ' : 'solid. ';
+
+          if (stats.non_concrete_met > stats.concrete_met) {
+            insight += `You excel with non-concrete invites (${stats.non_concrete_met} meetings) vs concrete ones (${stats.concrete_met} meetings). `;
+          } else if (stats.concrete_met > stats.non_concrete_met) {
+            insight += `Concrete invites work best for you (${stats.concrete_met} meetings). `;
+          }
+
+          if (stats.avg_invite_index && stats.avg_invite_index <= 5) {
+            insight += `You tend to move fast, asking around message #${stats.avg_invite_index}. `;
+          } else if (stats.avg_invite_index && stats.avg_invite_index > 10) {
+            insight += `You build rapport before asking (message #${stats.avg_invite_index}). `;
+          }
+
+          // Quadrant analysis
+          const quadStats = stats.quadrant_stats;
+          if (quadStats) {
+            const bestQuad = Object.entries(quadStats).reduce((best, [name, data]) =>
+              data.rate > (best?.rate ?? 0) ? { name, ...data } : best, null);
+
+            if (bestQuad) {
+              insight += `Your "${bestQuad.name}" style has a ${bestQuad.rate}% success rate.`;
+            }
+          }
+
+          document.getElementById('personal-insight').textContent = insight;
+        })
+        .catch(err => {
+          console.error('Failed to load personal stats', err);
+          document.getElementById('personal-insight').textContent = 'Run analyze_personal_stats.py to generate your insights!';
+        });
+
+      fetch('./data/timeline_stats.json')
+        .then(response => response.json())
+        .then(timeline => {
+          renderTimeline(timeline);
+
+          const earliest = new Date(timeline.earliest);
+          const latest = new Date(timeline.latest);
+          const monthsDiff = Math.round(timeline.duration_days / 30);
+
+          document.getElementById('timeline-summary').textContent =
+            `${timeline.total_messages} messages over ${monthsDiff} months (${earliest.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${latest.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })})`;
+        })
+        .catch(err => {
+          console.error('Failed to load timeline', err);
+          document.getElementById('timeline-summary').textContent = 'Run analyze_timeline.py to generate timeline data!';
+        });
+    }
+
     function loadData() {
       fetch('./data/conversations_features.min.json')
         .then(response => response.json())
@@ -1334,6 +1557,7 @@
       handleToggleMethods();
       setupObserver();
       updateToggleIndicator();
+      loadPersonalStats();
       loadData();
     });
   </script>

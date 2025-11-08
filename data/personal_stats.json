@@ -1,0 +1,22 @@
+{
+  "total_conversations": 28,
+  "met_count": 18,
+  "meet_rate": 64.3,
+  "concrete_met": 4,
+  "non_concrete_met": 14,
+  "avg_invite_index": 4.7,
+  "avg_question_density": 0.16,
+  "avg_msg_length": 36.1,
+  "quadrant_stats": {
+    "Short & Curious": {
+      "met": 2,
+      "total": 3,
+      "rate": 66.7
+    },
+    "Short & Silent": {
+      "met": 16,
+      "total": 25,
+      "rate": 64.0
+    }
+  }
+}
