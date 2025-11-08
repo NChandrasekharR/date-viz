@@ -225,6 +225,120 @@
       z-index: 30;
     }
 
+    /* Personal Stats Dashboard */
+    .personal-stats {
+      max-width: 740px;
+      margin: 0 auto 64px;
+      padding: 32px 24px;
+      background: linear-gradient(135deg, #2A7F8E 0%, #1a5f6b 100%);
+      border-radius: 12px;
+      color: #fff;
+    }
+
+    .personal-stats h2 {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 1.8rem;
+      margin: 0 0 24px;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-value {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin: 0 0 4px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin: 0;
+    }
+
+    .insight-box {
+      background: rgba(255, 255, 255, 0.1);
+      border-left: 4px solid #C92C2C;
+      padding: 16px;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+
+    .insight-box h3 {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 1rem;
+      margin: 0 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .funnel-container {
+      margin-top: 24px;
+    }
+
+    .funnel-stage {
+      background: rgba(255, 255, 255, 0.1);
+      margin-bottom: 8px;
+      padding: 12px 16px;
+      border-radius: 4px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .funnel-stage:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateX(4px);
+    }
+
+    .funnel-label {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .funnel-bar-bg {
+      background: rgba(255, 255, 255, 0.1);
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .funnel-bar-fill {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
+      height: 100%;
+      transition: width 0.8s ease;
+      border-radius: 10px;
+    }
+
+    .funnel-stats {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
     @media (max-width: 768px) {
       header.hero {
         padding-top: 48px;
@@ -241,6 +355,12 @@
         transform: translateX(-50%);
         top: 12px;
       }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .stat-value {
+        font-size: 1.8rem;
+      }
     }
   </style>
 </head>
@@ -251,6 +371,41 @@
     <h1>Most Hinge Chats Die in 48 Hours</h1>
     <p class="dek">Across six years of swipes and chats, the odds of staying alive plunge after two days. Survive that window and your chance of meeting jumps.</p>
   </header>
+
+  <section class="personal-stats">
+    <h2>Your Personal Journey</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <p class="stat-value" id="personal-matches">—</p>
+        <p class="stat-label">Total Matches</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-value" id="personal-chats">—</p>
+        <p class="stat-label">Got Response</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-value" id="personal-met">—</p>
+        <p class="stat-label">Met in Person</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-value" id="personal-conversion">—</p>
+        <p class="stat-label">Match→Meet Rate</p>
+      </div>
+    </div>
+    <div class="funnel-container">
+      <h3 style="font-family: 'Libre Franklin', sans-serif; font-size: 1rem; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.05em;">The Reality: Your Conversion Funnel</h3>
+      <div id="funnel-stages"></div>
+    </div>
+    <div class="insight-box">
+      <h3>What Works For You</h3>
+      <p id="personal-insight">Loading your personal insights...</p>
+    </div>
+    <div style="margin-top: 24px;">
+      <h3 style="font-family: 'Libre Franklin', sans-serif; font-size: 1rem; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.05em;">Your Activity Timeline</h3>
+      <svg id="timeline-chart" role="img" aria-label="Your activity over time"></svg>
+      <p style="font-size: 0.85rem; margin: 8px 0 0; opacity: 0.9;" id="timeline-summary">Loading timeline...</p>
+    </div>
+  </section>
 
   <section id="scrolly">
     <article class="step">
@@ -1318,6 +1473,163 @@
       setupKeyboard(inviteData, { concrete: heatmapConcrete, all: heatmapAll });
     }
 
+    function renderTimeline(data) {
+      const svg = d3.select('#timeline-chart');
+      svg.selectAll('*').remove();
+
+      const width = 696;
+      const height = 120;
+      const margin = { top: 10, right: 0, bottom: 30, left: 40 };
+
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const monthlyData = data.by_month.slice(-12); // Last 12 months
+
+      const x = d3.scaleBand()
+        .domain(monthlyData.map(d => d.month))
+        .range([0, innerWidth])
+        .padding(0.2);
+
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(monthlyData, d => d.count) || 100])
+        .range([innerHeight, 0]);
+
+      g.selectAll('rect')
+        .data(monthlyData)
+        .join('rect')
+        .attr('x', d => x(d.month))
+        .attr('y', d => y(d.count))
+        .attr('width', x.bandwidth())
+        .attr('height', d => innerHeight - y(d.count))
+        .attr('fill', 'rgba(255, 255, 255, 0.6)')
+        .attr('rx', 2);
+
+      g.append('g')
+        .attr('transform', `translate(0,${innerHeight})`)
+        .call(d3.axisBottom(x).tickFormat(d => {
+          const [year, month] = d.split('-');
+          return `${month}/${year.slice(2)}`;
+        }))
+        .selectAll('text')
+        .attr('fill', '#fff')
+        .style('font-size', '0.7rem');
+
+      g.append('g')
+        .call(d3.axisLeft(y).ticks(3))
+        .selectAll('text')
+        .attr('fill', '#fff')
+        .style('font-size', '0.7rem');
+
+      g.selectAll('.domain, .tick line')
+        .attr('stroke', 'rgba(255, 255, 255, 0.3)');
+    }
+
+    function renderFunnel(funnel) {
+      const container = document.getElementById('funnel-stages');
+      container.innerHTML = '';
+
+      const stages = [
+        { label: '🎯 Total Matches', value: funnel.total_matches, percent: 100, detail: '' },
+        { label: '💬 Got a Response', value: funnel.matches_with_chats, percent: funnel.chat_rate, detail: `${(100 - funnel.chat_rate).toFixed(1)}% ghosted` },
+        { label: '🤝 Met in Person', value: funnel.met_yes, percent: funnel.meet_rate_of_chats, detail: `${funnel.avg_messages_per_chat} avg msgs per chat` },
+        { label: '❤️ Were Your Type', value: funnel.met_yes, percent: 100, detail: 'Perfect filtering!' }
+      ];
+
+      stages.forEach((stage, idx) => {
+        const stageDiv = document.createElement('div');
+        stageDiv.className = 'funnel-stage';
+
+        const label = document.createElement('div');
+        label.className = 'funnel-label';
+        label.textContent = stage.label;
+
+        const barBg = document.createElement('div');
+        barBg.className = 'funnel-bar-bg';
+
+        const barFill = document.createElement('div');
+        barFill.className = 'funnel-bar-fill';
+        barFill.style.width = '0%';
+        setTimeout(() => {
+          barFill.style.width = `${stage.percent}%`;
+        }, idx * 150);
+
+        barBg.appendChild(barFill);
+
+        const stats = document.createElement('div');
+        stats.className = 'funnel-stats';
+        stats.textContent = `${stage.value.toLocaleString()} (${stage.percent.toFixed(1)}%)`;
+        if (stage.detail) {
+          stats.textContent += ` • ${stage.detail}`;
+        }
+
+        stageDiv.appendChild(label);
+        stageDiv.appendChild(barBg);
+        stageDiv.appendChild(stats);
+
+        container.appendChild(stageDiv);
+      });
+    }
+
+    function loadPersonalStats() {
+      // Load funnel data
+      fetch('./data/funnel_stats.json')
+        .then(response => response.json())
+        .then(funnel => {
+          document.getElementById('personal-matches').textContent = funnel.total_matches.toLocaleString();
+          document.getElementById('personal-chats').textContent = funnel.matches_with_chats;
+          document.getElementById('personal-met').textContent = funnel.met_yes;
+          document.getElementById('personal-conversion').textContent = `${funnel.overall_meet_rate}%`;
+
+          renderFunnel(funnel);
+
+          // Generate insight based on funnel
+          let insight = `The harsh reality: ${funnel.chat_rate}% response rate means ${(100 - funnel.chat_rate).toFixed(1)}% of matches never chat. `;
+          insight += `But when they DO respond, you convert ${funnel.meet_rate_of_chats}% to meetings. `;
+          insight += `Overall: ${funnel.overall_meet_rate}% of all matches become dates. `;
+
+          if (funnel.avg_messages_per_chat > 20) {
+            insight += `Your conversations average ${funnel.avg_messages_per_chat} messages—you build real connections!`;
+          }
+
+          document.getElementById('personal-insight').textContent = insight;
+        })
+        .catch(err => {
+          console.error('Failed to load funnel stats', err);
+        });
+
+      // Load detailed stats for below
+      fetch('./data/personal_stats.json')
+        .then(response => response.json())
+        .then(stats => {
+          // Keep original detailed insights in a separate section if needed
+        })
+        .catch(err => {
+          console.error('Failed to load personal stats', err);
+        });
+
+      fetch('./data/timeline_stats.json')
+        .then(response => response.json())
+        .then(timeline => {
+          renderTimeline(timeline);
+
+          const earliest = new Date(timeline.earliest);
+          const latest = new Date(timeline.latest);
+          const monthsDiff = Math.round(timeline.duration_days / 30);
+
+          document.getElementById('timeline-summary').textContent =
+            `${timeline.total_messages} messages over ${monthsDiff} months (${earliest.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${latest.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })})`;
+        })
+        .catch(err => {
+          console.error('Failed to load timeline', err);
+          document.getElementById('timeline-summary').textContent = 'Run analyze_timeline.py to generate timeline data!';
+        });
+    }
+
     function loadData() {
       fetch('./data/conversations_features.min.json')
         .then(response => response.json())
@@ -1334,6 +1646,7 @@
       handleToggleMethods();
       setupObserver();
       updateToggleIndicator();
+      loadPersonalStats();
       loadData();
     });
   </script>

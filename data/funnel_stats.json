@@ -1,0 +1,17 @@
+{
+  "total_matches": 5601,
+  "matches_with_chats": 207,
+  "chat_rate": 3.7,
+  "avg_messages_per_chat": 28.6,
+  "tracked_we_met": 28,
+  "met_yes": 20,
+  "met_no": 0,
+  "overall_meet_rate": 0.36,
+  "meet_rate_of_chats": 9.7,
+  "total_messages": 5915,
+  "conversation_distribution": {
+    "short": 53,
+    "medium": 79,
+    "long": 75
+  }
+}
