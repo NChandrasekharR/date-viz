@@ -1,5 +1,6 @@
 # Personal Identifiable Information - DO NOT COMMIT
 data/matches.json
+data/conversations_features.min.json
 
 # Python cache
 __pycache__/
