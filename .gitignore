@@ -1,0 +1,10 @@
+# Personal Identifiable Information - DO NOT COMMIT
+data/matches.json
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
