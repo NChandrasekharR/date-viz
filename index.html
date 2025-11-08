@@ -1631,7 +1631,7 @@
     }
 
     function loadData() {
-      fetch('./data/conversations_features.min.json')
+      fetch('./data/conversations_features.json')
         .then(response => response.json())
         .then(json => {
           state.data = json;
