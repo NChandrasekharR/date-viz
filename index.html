@@ -294,6 +294,51 @@
       line-height: 1.5;
     }
 
+    .funnel-container {
+      margin-top: 24px;
+    }
+
+    .funnel-stage {
+      background: rgba(255, 255, 255, 0.1);
+      margin-bottom: 8px;
+      padding: 12px 16px;
+      border-radius: 4px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .funnel-stage:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateX(4px);
+    }
+
+    .funnel-label {
+      font-family: 'Libre Franklin', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .funnel-bar-bg {
+      background: rgba(255, 255, 255, 0.1);
+      height: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .funnel-bar-fill {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
+      height: 100%;
+      transition: width 0.8s ease;
+      border-radius: 10px;
+    }
+
+    .funnel-stats {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
     @media (max-width: 768px) {
       header.hero {
         padding-top: 48px;
@@ -331,21 +376,25 @@
     <h2>Your Personal Journey</h2>
     <div class="stats-grid">
       <div class="stat-card">
-        <p class="stat-value" id="personal-total">—</p>
-        <p class="stat-label">Conversations</p>
+        <p class="stat-value" id="personal-matches">—</p>
+        <p class="stat-label">Total Matches</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-value" id="personal-chats">—</p>
+        <p class="stat-label">Got Response</p>
       </div>
       <div class="stat-card">
         <p class="stat-value" id="personal-met">—</p>
         <p class="stat-label">Met in Person</p>
       </div>
       <div class="stat-card">
-        <p class="stat-value" id="personal-rate">—</p>
-        <p class="stat-label">Success Rate</p>
+        <p class="stat-value" id="personal-conversion">—</p>
+        <p class="stat-label">Match→Meet Rate</p>
       </div>
-      <div class="stat-card">
-        <p class="stat-value" id="personal-timing">—</p>
-        <p class="stat-label">Avg Invite Msg #</p>
-      </div>
+    </div>
+    <div class="funnel-container">
+      <h3 style="font-family: 'Libre Franklin', sans-serif; font-size: 1rem; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.05em;">The Reality: Your Conversion Funnel</h3>
+      <div id="funnel-stages"></div>
     </div>
     <div class="insight-box">
       <h3>What Works For You</h3>
@@ -1480,47 +1529,87 @@
         .attr('stroke', 'rgba(255, 255, 255, 0.3)');
     }
 
+    function renderFunnel(funnel) {
+      const container = document.getElementById('funnel-stages');
+      container.innerHTML = '';
+
+      const stages = [
+        { label: '🎯 Total Matches', value: funnel.total_matches, percent: 100, detail: '' },
+        { label: '💬 Got a Response', value: funnel.matches_with_chats, percent: funnel.chat_rate, detail: `${(100 - funnel.chat_rate).toFixed(1)}% ghosted` },
+        { label: '🤝 Met in Person', value: funnel.met_yes, percent: funnel.meet_rate_of_chats, detail: `${funnel.avg_messages_per_chat} avg msgs per chat` },
+        { label: '❤️ Were Your Type', value: funnel.met_yes, percent: 100, detail: 'Perfect filtering!' }
+      ];
+
+      stages.forEach((stage, idx) => {
+        const stageDiv = document.createElement('div');
+        stageDiv.className = 'funnel-stage';
+
+        const label = document.createElement('div');
+        label.className = 'funnel-label';
+        label.textContent = stage.label;
+
+        const barBg = document.createElement('div');
+        barBg.className = 'funnel-bar-bg';
+
+        const barFill = document.createElement('div');
+        barFill.className = 'funnel-bar-fill';
+        barFill.style.width = '0%';
+        setTimeout(() => {
+          barFill.style.width = `${stage.percent}%`;
+        }, idx * 150);
+
+        barBg.appendChild(barFill);
+
+        const stats = document.createElement('div');
+        stats.className = 'funnel-stats';
+        stats.textContent = `${stage.value.toLocaleString()} (${stage.percent.toFixed(1)}%)`;
+        if (stage.detail) {
+          stats.textContent += ` • ${stage.detail}`;
+        }
+
+        stageDiv.appendChild(label);
+        stageDiv.appendChild(barBg);
+        stageDiv.appendChild(stats);
+
+        container.appendChild(stageDiv);
+      });
+    }
+
     function loadPersonalStats() {
-      fetch('./data/personal_stats.json')
+      // Load funnel data
+      fetch('./data/funnel_stats.json')
         .then(response => response.json())
-        .then(stats => {
-          document.getElementById('personal-total').textContent = stats.total_conversations;
-          document.getElementById('personal-met').textContent = stats.met_count;
-          document.getElementById('personal-rate').textContent = `${stats.meet_rate}%`;
-          document.getElementById('personal-timing').textContent = stats.avg_invite_index ? `#${stats.avg_invite_index}` : '—';
+        .then(funnel => {
+          document.getElementById('personal-matches').textContent = funnel.total_matches.toLocaleString();
+          document.getElementById('personal-chats').textContent = funnel.matches_with_chats;
+          document.getElementById('personal-met').textContent = funnel.met_yes;
+          document.getElementById('personal-conversion').textContent = `${funnel.overall_meet_rate}%`;
 
-          // Generate personalized insight
-          let insight = `Your success rate of ${stats.meet_rate}% is `;
-          insight += stats.meet_rate >= 50 ? 'excellent! ' : 'solid. ';
+          renderFunnel(funnel);
 
-          if (stats.non_concrete_met > stats.concrete_met) {
-            insight += `You excel with non-concrete invites (${stats.non_concrete_met} meetings) vs concrete ones (${stats.concrete_met} meetings). `;
-          } else if (stats.concrete_met > stats.non_concrete_met) {
-            insight += `Concrete invites work best for you (${stats.concrete_met} meetings). `;
-          }
+          // Generate insight based on funnel
+          let insight = `The harsh reality: ${funnel.chat_rate}% response rate means ${(100 - funnel.chat_rate).toFixed(1)}% of matches never chat. `;
+          insight += `But when they DO respond, you convert ${funnel.meet_rate_of_chats}% to meetings. `;
+          insight += `Overall: ${funnel.overall_meet_rate}% of all matches become dates. `;
 
-          if (stats.avg_invite_index && stats.avg_invite_index <= 5) {
-            insight += `You tend to move fast, asking around message #${stats.avg_invite_index}. `;
-          } else if (stats.avg_invite_index && stats.avg_invite_index > 10) {
-            insight += `You build rapport before asking (message #${stats.avg_invite_index}). `;
-          }
-
-          // Quadrant analysis
-          const quadStats = stats.quadrant_stats;
-          if (quadStats) {
-            const bestQuad = Object.entries(quadStats).reduce((best, [name, data]) =>
-              data.rate > (best?.rate ?? 0) ? { name, ...data } : best, null);
-
-            if (bestQuad) {
-              insight += `Your "${bestQuad.name}" style has a ${bestQuad.rate}% success rate.`;
-            }
+          if (funnel.avg_messages_per_chat > 20) {
+            insight += `Your conversations average ${funnel.avg_messages_per_chat} messages—you build real connections!`;
           }
 
           document.getElementById('personal-insight').textContent = insight;
         })
         .catch(err => {
+          console.error('Failed to load funnel stats', err);
+        });
+
+      // Load detailed stats for below
+      fetch('./data/personal_stats.json')
+        .then(response => response.json())
+        .then(stats => {
+          // Keep original detailed insights in a separate section if needed
+        })
+        .catch(err => {
           console.error('Failed to load personal stats', err);
-          document.getElementById('personal-insight').textContent = 'Run analyze_personal_stats.py to generate your insights!';
         });
 
       fetch('./data/timeline_stats.json')
