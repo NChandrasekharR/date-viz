@@ -7,13 +7,15 @@ from datetime import datetime
 import re
 
 def parse_timestamp(ts_str):
-    """Parse timestamp string to datetime"""
+    """Parse timestamp string to datetime (handles 'YYYY-MM-DD HH:MM:SS' and ISO 8601)"""
     if not ts_str:
         return None
-    try:
-        return datetime.strptime(ts_str, '%Y-%m-%d %H:%M:%S')
-    except:
-        return None
+    for fmt in ('%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M:%S.%f'):
+        try:
+            return datetime.strptime(ts_str, fmt)
+        except ValueError:
+            continue
+    return None
 
 def extract_invite_info(chats):
     """Extract first invite message index and whether it's concrete"""
@@ -78,13 +80,18 @@ for match in matches:
     if not chats:
         continue
 
+    # Hinge exports do not guarantee chronological order within a match;
+    # sort by timestamp so first/last and the "first 10 messages" features are correct
+    chats = sorted(chats, key=lambda c: parse_timestamp(c.get('timestamp')) or datetime.min)
+
     # Extract timestamps
     match_time = None
     if isinstance(match_data, dict):
         match_time = parse_timestamp(match_data.get('timestamp'))
 
-    first_msg_time = parse_timestamp(chats[0].get('timestamp')) if chats else None
-    last_msg_time = parse_timestamp(chats[-1].get('timestamp')) if chats else None
+    msg_times = [t for t in (parse_timestamp(c.get('timestamp')) for c in chats) if t]
+    first_msg_time = msg_times[0] if msg_times else None
+    last_msg_time = msg_times[-1] if msg_times else None
 
     # Calculate duration
     duration_hours = None
@@ -128,9 +135,9 @@ for match in matches:
         'match_time': match_time.isoformat() if match_time else None,
         'first_msg_time': first_msg_time.isoformat() if first_msg_time else None,
         'last_msg_time': last_msg_time.isoformat() if last_msg_time else None,
-        'duration_hours': round(duration_hours, 2) if duration_hours else None,
-        'first_msg_delay_minutes': round(first_msg_delay_minutes, 2) if first_msg_delay_minutes else None,
-        'first_invite_msg_index': float(invite_index) if invite_index else None,
+        'duration_hours': round(duration_hours, 2) if duration_hours is not None else None,
+        'first_msg_delay_minutes': round(first_msg_delay_minutes, 2) if first_msg_delay_minutes is not None else None,
+        'first_invite_msg_index': float(invite_index) if invite_index is not None else None,
         'invite_is_concrete': is_concrete,
         'question_density_first10': round(question_density, 3),
         'median_len_first10': median_length,

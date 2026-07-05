@@ -472,8 +472,8 @@
   <footer class="methods">
     <button id="toggle-methods" aria-expanded="false">Methods &amp; Caveats</button>
     <div id="methods-body" hidden>
-      <p><strong>Alive vs. dead:</strong> A conversation is “alive” until 72 hours pass without a new message on the visible side of the chat. Ongoing threads are right-censored.</p>
-      <p><strong>Meeting:</strong> Conversations marked “Yes” in the dataset’s <code>met</code> field.</p>
+      <p><strong>Lifespan:</strong> A conversation’s lifespan is the time between its first and last message. Threads still active past the 168-hour window are right-censored.</p>
+      <p><strong>Meeting:</strong> Conversations marked “Yes” in the dataset’s <code>met</code> field. Conversations with no survey answer are counted as not having met, matching the funnel statistics.</p>
       <p><strong>Confidence intervals:</strong> Binomial Wilson intervals for proportions; survival via Kaplan–Meier; hazard smoothed with a moving window.</p>
       <p><strong>Visibility:</strong> We only observe one side of the messages; timing signals are approximate. Results are descriptive, not causal.</p>
     </div>
@@ -481,7 +481,7 @@
 
   <div class="tooltip" role="tooltip" id="tooltip" aria-hidden="true"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" integrity="sha512-M7nHCiNUOwFt6Us3r8alutZLm9qMt4s9951uo8jqO4UwJ1hziseL6O3ndFyigx6+LREfZqnhHxYjKRJ8ZQ69DQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="./vendor/d3.v7.min.js"></script>
   <script>
     const state = {
       concreteOnly: true,
@@ -506,11 +506,6 @@
       tooltip.style.left = `${event.clientX + 12}px`;
       tooltip.style.top = `${event.clientY + 12}px`;
       tooltip.setAttribute('aria-hidden', 'false');
-    }
-
-    function moveTooltip(event) {
-      tooltip.style.left = `${event.clientX + 12}px`;
-      tooltip.style.top = `${event.clientY + 12}px`;
     }
 
     function hideTooltip() {
@@ -549,11 +544,11 @@
       return { lower, upper };
     }
 
+    // Meeting = explicitly marked "Yes". Most conversations have no survey answer;
+    // treating them as "did not meet" matches the funnel stats (denominator = all chats)
+    // and avoids survivorship bias from the handful of answered surveys.
     function metValue(entry) {
-      if (!entry) return null;
-      if (entry === 'Yes') return true;
-      if (entry === 'No' || entry === 'Not yet') return false;
-      return null;
+      return entry === 'Yes';
     }
 
     function clamp(value, min, max) {
@@ -570,24 +565,24 @@
       });
     }
 
-    function computeSurvival(records, maxHours = 168, inactivity = 72) {
+    function computeSurvival(records, maxHours = 168) {
       const survivalRecords = [];
       for (const d of records) {
-        const match = parseDate(d.match_time);
+        const start = parseDate(d.first_msg_time) || parseDate(d.match_time);
         const last = parseDate(d.last_msg_time);
         let span = Number.isFinite(d.duration_hours) ? d.duration_hours : null;
-        if ((span === null || isNaN(span)) && match && last) {
-          span = differenceInHours(match, last);
+        if ((span === null || isNaN(span)) && start && last) {
+          span = differenceInHours(start, last);
         }
         if (!Number.isFinite(span)) continue;
-        if (span < 0) continue;
-        const deathTime = span + inactivity;
-        const cappedTime = Math.min(deathTime, maxHours);
-        const event = deathTime <= maxHours;
+        // Some exports have unsorted chats; a reversed pair is still a valid span
+        span = Math.abs(span);
+        const cappedTime = Math.min(span, maxHours);
+        const event = span <= maxHours;
         const met = metValue(d.met);
         survivalRecords.push({
           time: cappedTime,
-          rawTime: deathTime,
+          rawTime: span,
           baseSpan: span,
           event,
           met,
@@ -880,18 +875,23 @@
         const hour = inviteTime.getHours();
         dayHours[day][hour].invites += 1;
       });
+      // Without match timestamps (some exports omit them) there is no per-cell
+      // denominator, so fall back to each cell's share of all invites.
+      const totalMatches = d3.sum(dayHours.flat(), d => d.matches);
+      const totalInvites = d3.sum(dayHours.flat(), d => d.invites);
+      const normalizedByMatches = totalMatches > 0;
       let maxProp = 0;
       for (const row of dayHours) {
         for (const cell of row) {
-          if (cell.matches > 0) {
-            cell.propensity = cell.invites / cell.matches;
-            if (cell.propensity > maxProp) maxProp = cell.propensity;
+          if (normalizedByMatches) {
+            cell.propensity = cell.matches > 0 ? cell.invites / cell.matches : 0;
           } else {
-            cell.propensity = 0;
+            cell.propensity = totalInvites > 0 ? cell.invites / totalInvites : 0;
           }
+          if (cell.propensity > maxProp) maxProp = cell.propensity;
         }
       }
-      return { grid: dayHours.flat(), maxProp };
+      return { grid: dayHours.flat(), maxProp, normalizedByMatches };
     }
 
     function findHotLane(grid) {
@@ -1104,7 +1104,6 @@
           const ci = d.ci ? `${(d.ci.lower * 100).toFixed(1)}%–${(d.ci.upper * 100).toFixed(1)}%` : '—';
           showTooltip(`<strong>${d.label}</strong><br />${d.concrete ? 'Concrete invite' : 'Loose invite'}<br />Meet: ${(d.rate * 100).toFixed(1)}%<br />95% CI: ${ci}<br />n = ${d.count}`, event);
         })
-        .on('mousemove', moveTooltip)
         .on('mouseleave', hideTooltip);
 
       barGroups.filter(d => d.rate !== null && d.ci)
@@ -1177,7 +1176,6 @@
           if (d.rate === null) return;
           showTooltip(`<strong>${d.label}</strong><br />Meet: ${(d.rate * 100).toFixed(1)}%<br />n = ${d.count}`, event);
         })
-        .on('mousemove', moveTooltip)
         .on('mouseleave', hideTooltip);
 
       quadrantGroup.append('text')
@@ -1220,6 +1218,18 @@
       const height = 420;
       const margin = { top: 24, right: 16, bottom: 72, left: 60 };
       svg.attr('viewBox', `0 0 ${width} ${height}`);
+
+      if (!data.some(d => d.count > 0)) {
+        svg.attr('viewBox', `0 0 ${width} 80`);
+        svg.append('text')
+          .attr('x', width / 2)
+          .attr('y', 44)
+          .attr('text-anchor', 'middle')
+          .attr('font-size', 14)
+          .attr('fill', '#555')
+          .text('No reply-timing data in this export (match timestamps unavailable).');
+        return;
+      }
 
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
@@ -1267,7 +1277,6 @@
           const ci = d.ci ? `${(d.ci.lower * 100).toFixed(1)}%–${(d.ci.upper * 100).toFixed(1)}%` : '—';
           showTooltip(`<strong>${d.label}</strong><br />Meet: ${(d.rate * 100).toFixed(1)}%<br />95% CI: ${ci}<br />n = ${d.count}`, event);
         })
-        .on('mousemove', moveTooltip)
         .on('mouseleave', hideTooltip);
 
       g.selectAll('.delay-error')
@@ -1310,9 +1319,11 @@
         .attr('height', y.bandwidth())
         .attr('fill', d => color(d.propensity || 0))
         .on('mousemove', (event, d) => {
-          showTooltip(`${dayLabel(d.day)} ${formatHourRange(d.hour, d.hour + 1)}<br />Invite propensity: ${(d.propensity * 100).toFixed(2)}%<br />Invites: ${d.invites}<br />Matches: ${d.matches}`, event);
+          const denomLine = gridData.normalizedByMatches
+            ? `Invites: ${d.invites}<br />Matches: ${d.matches}`
+            : `Invites: ${d.invites}`;
+          showTooltip(`${dayLabel(d.day)} ${formatHourRange(d.hour, d.hour + 1)}<br />${gridData.normalizedByMatches ? 'Invite propensity' : 'Share of invites'}: ${(d.propensity * 100).toFixed(2)}%<br />${denomLine}`, event);
         })
-        .on('mousemove', moveTooltip)
         .on('mouseleave', hideTooltip);
 
       g.append('g')
@@ -1342,7 +1353,7 @@
         .attr('x', 24)
         .attr('y', 12)
         .attr('font-size', 12)
-        .text('Higher invite propensity');
+        .text(gridData.normalizedByMatches ? 'Higher invite propensity' : 'More invites');
 
       gradientLabel.append('text')
         .attr('x', 24)
@@ -1488,7 +1499,23 @@
 
       const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-      const monthlyData = data.by_month.slice(-12); // Last 12 months
+      // The source data skips months with no activity; fill the gaps so the
+      // last-12-months window is a contiguous calendar range.
+      const countsByMonth = new Map(data.by_month.map(d => [d.month, d.count]));
+      const months = data.by_month.map(d => d.month).sort();
+      const filled = [];
+      if (months.length) {
+        let [year, month] = months[0].split('-').map(Number);
+        const last = months[months.length - 1];
+        let key = months[0];
+        while (key <= last) {
+          filled.push({ month: key, count: countsByMonth.get(key) || 0 });
+          month += 1;
+          if (month > 12) { month = 1; year += 1; }
+          key = `${year}-${String(month).padStart(2, '0')}`;
+        }
+      }
+      const monthlyData = filled.slice(-12); // Last 12 months
 
       const x = d3.scaleBand()
         .domain(monthlyData.map(d => d.month))
@@ -1600,16 +1627,6 @@
         })
         .catch(err => {
           console.error('Failed to load funnel stats', err);
-        });
-
-      // Load detailed stats for below
-      fetch('./data/personal_stats.json')
-        .then(response => response.json())
-        .then(stats => {
-          // Keep original detailed insights in a separate section if needed
-        })
-        .catch(err => {
-          console.error('Failed to load personal stats', err);
         });
 
       fetch('./data/timeline_stats.json')
