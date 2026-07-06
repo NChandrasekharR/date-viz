@@ -18,13 +18,14 @@ View the scrollytelling visualization at: [Your GitHub Pages URL]
 The visualization shows **aggregated statistics only**. No personal chat content is stored in this repo.
 
 **Included (safe to commit):**
-- `data/conversations_features.min.json` - Numerical features (message counts, timing)
+- `data/conversations_features.json` - Numerical features (message counts, timing)
 - `data/personal_stats.json` - Aggregated success metrics
 - `data/timeline_stats.json` - Message activity by time
 - `data/funnel_stats.json` - Conversion funnel metrics
 
-**Excluded (privacy protected):**
-- `data/matches.json` - Contains actual chat messages (gitignored)
+**Excluded (privacy protected, gitignored):**
+- `data/matches.json` - Contains actual chat messages
+- `data/conversations_features.min.json` - Full per-match feature dump
 
 ## Setup with Your Own Data
 
@@ -66,10 +67,9 @@ The visualization shows **aggregated statistics only**. No personal chat content
 
 ## Technologies
 
-- D3.js for data visualization
-- Vanilla JavaScript for interactivity
+- D3.js for data visualization (vendored in `vendor/`, no CDN dependency)
+- Vanilla JavaScript for interactivity (IntersectionObserver scrollytelling)
 - Python for data analysis
-- Scrollama for scrollytelling
 
 ## Insights
 
