@@ -396,6 +396,7 @@
           <figcaption>Meeting rate by opener style, with 95% Wilson confidence intervals.</figcaption>
           <details class="table-view"><summary>View as table</summary><div id="table-opener"></div></details>
         </figure>
+        <p class="aside" style="margin-top: 18px;" id="opener-verdict"></p>
       </div>
     </section>
 
@@ -1412,6 +1413,28 @@
         .attr('text-anchor', 'middle')
         .attr('font-size', 10.5).attr('fill', inkSec)
         .text(d => `n = ${d.n}`);
+
+      // zero bars have no mark to read — label them so the goose egg is intentional
+      g.selectAll('.zero-label').data(model.filter(d => d.rate === 0)).join('text')
+        .attr('x', d => bx(d) + barW / 2)
+        .attr('y', innerH - 8)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 12).attr('font-weight', 600).attr('fill', ink)
+        .attr('pointer-events', 'none')
+        .text('0%');
+
+      const low = model.find(m => m.id === 'loweffort');
+      const cheesy = model.find(m => m.id === 'cheesy');
+      const plainDates = model.filter(m => m.id === 'question' || m.id === 'statement').reduce((s, m) => s + m.successes, 0);
+      const allDates = model.reduce((s, m) => s + m.successes, 0);
+      const verdict = document.getElementById('opener-verdict');
+      let text = 'Verdict: ';
+      if (cheesy) text += `certified cheese went ${cheesy.successes} for ${cheesy.n}. `;
+      if (low) text += `“Hey” went ${low.successes} for ${low.n}. `;
+      text += (plainDates === allDates && allDates > 0)
+        ? 'Every single date in this dataset began with an ordinary human sentence. Nobody has ever been charmed by a template.'
+        : 'The ordinary sentences did most of the work.';
+      verdict.textContent = text;
 
       buildTable('table-opener',
         ['Opener style', 'Conversations', 'Became dates', 'Meeting rate'],
