@@ -3,1670 +3,1501 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Most Hinge Chats Die in 48 Hours</title>
+  <title>5,601 Matches. 18 Dates. A Forensic Report.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@700&family=Merriweather:wght@300;400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@700&family=Merriweather:wght@300;400;400italic&display=swap" rel="stylesheet" />
   <style>
     :root {
-      color-scheme: light;
+      --page: #f9f9f7;
+      --surface-1: #fcfcfb;
+      --text-primary: #0b0b0b;
+      --text-secondary: #52514e;
+      --text-muted: #898781;
+      --gridline: #e1e0d9;
+      --baseline: #c3c2b7;
+      --border: rgba(11, 11, 11, 0.10);
+      --accent: #2a78d6;          /* categorical slot 1 */
+      --accent-soft: #86b6ef;     /* ordinal ramp, light end */
+      --deemph: #c9c8c1;          /* de-emphasis context marks */
+      --tooltip-bg: rgba(17, 17, 17, 0.94);
+      --tooltip-ink: #ffffff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page: #0d0d0d;
+        --surface-1: #1a1a19;
+        --text-primary: #ffffff;
+        --text-secondary: #c3c2b7;
+        --text-muted: #898781;
+        --gridline: #2c2c2a;
+        --baseline: #383835;
+        --border: rgba(255, 255, 255, 0.10);
+        --accent: #3987e5;
+        --accent-soft: #256abf;
+        --deemph: #4a4a47;
+        --tooltip-bg: rgba(250, 250, 248, 0.96);
+        --tooltip-ink: #111111;
+      }
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
     body {
       margin: 0;
       font-family: 'Merriweather', serif;
-      background: #F9F9F7;
-      color: #111;
-      line-height: 1.6;
+      background: var(--page);
+      color: var(--text-primary);
+      line-height: 1.65;
     }
 
-    a {
-      color: #2A7F8E;
-    }
+    a { color: var(--accent); }
 
-    .hero, #scrolly, .methods {
-      max-width: 740px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
+    .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 96px; }
 
-    header.hero {
-      padding-top: 64px;
-      padding-bottom: 48px;
-    }
+    header.hero { padding: 72px 0 8px; }
 
-    .hero .kicker {
+    .kicker {
       font-family: 'Libre Franklin', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin: 0 0 8px;
+      margin: 0 0 10px;
+      color: var(--text-secondary);
     }
 
     .hero h1 {
       font-family: 'Libre Franklin', sans-serif;
       font-weight: 700;
-      font-size: clamp(2.2rem, 6vw, 3.4rem);
-      line-height: 1.1;
-      margin: 0 0 16px;
+      font-size: clamp(2.1rem, 6vw, 3.2rem);
+      line-height: 1.08;
+      margin: 0 0 18px;
     }
 
-    .hero .dek {
-      font-size: 1.1rem;
-      margin: 0;
+    .hero .dek { font-size: 1.08rem; margin: 0; color: var(--text-secondary); }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin: 36px 0 8px;
+    }
+    .stat-tile {
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .stat-tile .label {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 0.8rem; color: var(--text-secondary); margin: 0 0 6px;
+    }
+    .stat-tile .value {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-weight: 600; font-size: 1.9rem; line-height: 1.05; margin: 0;
+    }
+    .stat-tile .sub {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 0.75rem; color: var(--text-muted); margin: 4px 0 0;
     }
 
-    #scrolly {
-      position: relative;
-      padding-bottom: 120px;
-    }
-
-    article.step {
-      position: relative;
-      margin-bottom: 120px;
-      opacity: 0.3;
-      transform: translateY(40px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-
-    article.step.is-active {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    article.step h2 {
+    section.story { margin-top: 84px; }
+    section.story .act {
       font-family: 'Libre Franklin', sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      margin: 0 0 16px;
-      position: sticky;
-      top: 12px;
-      background: rgba(249, 249, 247, 0.9);
-      padding: 8px 0;
+      font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-muted); margin: 0 0 6px;
     }
-
-    article.step p.body {
-      margin-top: 0;
-      font-size: 1.05rem;
+    section.story h2 {
+      font-family: 'Libre Franklin', sans-serif;
+      font-weight: 700; font-size: 1.55rem; margin: 0 0 14px; line-height: 1.2;
+    }
+    section.story p.body { margin: 0 0 10px; font-size: 1rem; }
+    section.story p.aside {
+      font-style: italic; color: var(--text-secondary); font-size: 0.95rem; margin: 0 0 10px;
     }
 
     figure {
-      margin: 32px 0 0;
+      margin: 22px 0 0;
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 20px 12px;
     }
-
     figcaption {
-      font-size: 0.85rem;
-      color: #555;
-      margin-bottom: 12px;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 0.8rem; color: var(--text-muted); margin: 10px 0 4px;
     }
 
-    svg {
-      width: 100%;
-      height: auto;
-      display: block;
-      background: transparent;
-    }
+    svg { width: 100%; height: auto; display: block; }
+    svg text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
 
-    .methods {
-      padding-bottom: 80px;
-    }
+    .chart-axis line, .chart-axis path { stroke: var(--baseline); stroke-width: 1; }
+    .chart-axis text { font-size: 11px; fill: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .grid-line { stroke: var(--gridline); stroke-width: 1; }
 
-    #toggle-methods {
-      background: none;
-      border: 1px solid #2A7F8E;
-      border-radius: 999px;
-      padding: 10px 18px;
-      font-family: 'Libre Franklin', sans-serif;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.3s ease, color 0.3s ease;
+    details.table-view {
+      margin: 8px 0 4px;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 0.82rem;
     }
+    details.table-view summary { cursor: pointer; color: var(--text-secondary); font-size: 0.8rem; padding: 4px 0; }
+    details.table-view table { border-collapse: collapse; width: 100%; margin-top: 8px; }
+    details.table-view th, details.table-view td {
+      text-align: left; padding: 5px 10px 5px 0;
+      border-bottom: 1px solid var(--gridline);
+      font-variant-numeric: tabular-nums; color: var(--text-primary);
+    }
+    details.table-view th { color: var(--text-secondary); font-weight: 600; font-size: 0.75rem; }
 
-    #toggle-methods:focus {
-      outline: 2px solid #C92C2C;
-      outline-offset: 2px;
+    .legend {
+      display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 0.78rem; color: var(--text-secondary); margin: 0 0 10px;
     }
+    .legend .key { display: inline-flex; align-items: center; gap: 6px; }
+    .legend .swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+    .legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
-    #toggle-methods[aria-expanded="true"] {
-      background: rgba(42, 127, 142, 0.35);
+    .stat-pair {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0 0;
     }
-
-    #methods-body {
-      margin-top: 20px;
-      border-top: 1px solid #E0E0E0;
-      padding-top: 16px;
-      font-size: 0.95rem;
-    }
+    @media (max-width: 540px) { .stat-pair { grid-template-columns: 1fr; } }
 
     .tooltip {
-      position: fixed;
-      pointer-events: none;
-      background: rgba(17, 17, 17, 0.92);
-      color: #fff;
-      padding: 8px 10px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      max-width: 220px;
-      z-index: 20;
-      opacity: 0;
-      transition: opacity 0.2s ease;
+      position: fixed; pointer-events: none;
+      background: var(--tooltip-bg); color: var(--tooltip-ink);
+      padding: 8px 10px; border-radius: 6px;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 0.78rem; line-height: 1.45; max-width: 240px;
+      z-index: 20; opacity: 0; transition: opacity 0.15s ease;
     }
+    .tooltip .val { font-weight: 600; }
 
-    .chart-axis line,
-    .chart-axis path {
-      stroke: #E0E0E0;
-      stroke-width: 1;
-    }
-
-    .chart-axis text {
-      font-size: 0.8rem;
-      fill: #555;
-    }
-
-    .survival-line {
-      fill: none;
-      stroke: #2A7F8E;
-      stroke-width: 2.5;
-    }
-
-    .hazard-area {
-      fill: rgba(42, 127, 142, 0.35);
-    }
-
-    .survival-marker {
-      fill: #C92C2C;
-      stroke: #fff;
-      stroke-width: 1.5;
-    }
-
-    .bar-concrete {
-      fill: rgba(42, 127, 142, 0.6);
-    }
-
-    .bar-nonconcrete {
-      fill: rgba(17, 17, 17, 0.15);
-    }
-
-    .error-line {
-      stroke: #111;
-      stroke-width: 1.5;
-    }
-
-    .grid-line {
-      stroke: #E0E0E0;
-      stroke-width: 1;
-    }
-
-    .heat-rect {
-      stroke: rgba(255, 255, 255, 0.2);
-      stroke-width: 0.5;
-    }
-
-    .quadrant rect {
-      transition: opacity 0.3s ease;
-    }
-
-    .toggle-indicator {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      background: rgba(17, 17, 17, 0.85);
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-family: 'Libre Franklin', sans-serif;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      z-index: 30;
-    }
-
-    /* Personal Stats Dashboard */
-    .personal-stats {
-      max-width: 740px;
-      margin: 0 auto 64px;
-      padding: 32px 24px;
-      background: linear-gradient(135deg, #2A7F8E 0%, #1a5f6b 100%);
-      border-radius: 12px;
-      color: #fff;
-    }
-
-    .personal-stats h2 {
-      font-family: 'Libre Franklin', sans-serif;
-      font-size: 1.8rem;
-      margin: 0 0 24px;
-      text-align: center;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .stat-card {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .stat-value {
-      font-family: 'Libre Franklin', sans-serif;
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin: 0 0 4px;
-      line-height: 1;
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      opacity: 0.9;
-      margin: 0;
-    }
-
-    .insight-box {
-      background: rgba(255, 255, 255, 0.1);
-      border-left: 4px solid #C92C2C;
-      padding: 16px;
-      border-radius: 4px;
-      margin-top: 20px;
-    }
-
-    .insight-box h3 {
-      font-family: 'Libre Franklin', sans-serif;
-      font-size: 1rem;
-      margin: 0 0 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-
-    .funnel-container {
-      margin-top: 24px;
-    }
-
-    .funnel-stage {
-      background: rgba(255, 255, 255, 0.1);
-      margin-bottom: 8px;
-      padding: 12px 16px;
-      border-radius: 4px;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    .funnel-stage:hover {
-      background: rgba(255, 255, 255, 0.15);
-      transform: translateX(4px);
-    }
-
-    .funnel-label {
-      font-family: 'Libre Franklin', sans-serif;
+    .locked-card {
+      background: var(--surface-1);
+      border: 1px dashed var(--baseline);
+      border-radius: 10px;
+      padding: 24px;
+      margin-top: 22px;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
       font-size: 0.9rem;
-      font-weight: 700;
-      margin-bottom: 6px;
+      color: var(--text-secondary);
+    }
+    .locked-card strong { color: var(--text-primary); }
+    .locked-card code {
+      background: var(--page); border: 1px solid var(--gridline);
+      border-radius: 4px; padding: 1px 6px; font-size: 0.82rem;
     }
 
-    .funnel-bar-bg {
-      background: rgba(255, 255, 255, 0.1);
-      height: 20px;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 4px;
+    .closing {
+      margin-top: 96px; text-align: center;
+      border-top: 1px solid var(--gridline); padding-top: 56px;
     }
-
-    .funnel-bar-fill {
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
-      height: 100%;
-      transition: width 0.8s ease;
-      border-radius: 10px;
+    .closing .big {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-weight: 600; font-size: clamp(2.4rem, 7vw, 3.6rem); line-height: 1.05; margin: 0 0 18px;
     }
+    .closing p { max-width: 560px; margin: 0 auto 10px; color: var(--text-secondary); }
 
-    .funnel-stats {
-      font-size: 0.85rem;
-      opacity: 0.9;
-    }
-
-    @media (max-width: 768px) {
-      header.hero {
-        padding-top: 48px;
-      }
-      article.step {
-        margin-bottom: 96px;
-      }
-      article.step h2 {
-        top: 0;
-      }
-      .toggle-indicator {
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%);
-        top: 12px;
-      }
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .stat-value {
-        font-size: 1.8rem;
-      }
+    footer.note {
+      margin-top: 72px; font-size: 0.85rem; color: var(--text-secondary);
+      border-top: 1px solid var(--gridline); padding-top: 16px;
     }
   </style>
 </head>
 <body>
-  <div class="toggle-indicator" role="status" aria-live="polite">Concrete invites only</div>
-  <header class="hero">
-    <p class="kicker">Dating &amp; Data</p>
-    <h1>Most Hinge Chats Die in 48 Hours</h1>
-    <p class="dek">Across six years of swipes and chats, the odds of staying alive plunge after two days. Survive that window and your chance of meeting jumps.</p>
-    <p style="font-family: 'Libre Franklin', sans-serif; font-size: 0.9rem; margin: 12px 0 0;"><a href="./stories.html">Part II: The road to a date has three gates →</a></p>
-  </header>
+  <div class="wrap">
+    <header class="hero">
+      <p class="kicker">Dating &amp; Data · A forensic report</p>
+      <h1>5,601 People Said Yes.<br />18 Dates Happened.</h1>
+      <p class="dek">Six years of Hinge, exported and interrogated. What follows is everything the data would admit to — the silence, the sliver, the asks that worked, and the conversations that refused to die.</p>
+    </header>
 
-  <section class="personal-stats">
-    <h2>Your Personal Journey</h2>
-    <div class="stats-grid">
-      <div class="stat-card">
-        <p class="stat-value" id="personal-matches">—</p>
-        <p class="stat-label">Total Matches</p>
+    <div class="kpi-row" id="kpi-row"></div>
+
+    <!-- ACT I — THE VOID -->
+    <section class="story">
+      <p class="act">Act I</p>
+      <h2>The Void</h2>
+      <p class="body">
+        Every bar chart lies a little. This one doesn't. Below: all 5,601 matches, drawn to scale.
+        The gray is people who matched and then said <em>nothing, ever</em>. The blue stripe is everyone who replied.
+        The dates are in there too. You may need to squint.
+      </p>
+      <figure>
+        <div class="legend">
+          <span class="key"><span class="swatch" style="background: var(--deemph)"></span>Silence (5,394)</span>
+          <span class="key"><span class="swatch" style="background: var(--accent-soft)"></span>Replied (189)</span>
+          <span class="key"><span class="swatch" style="background: var(--accent)"></span>Became a date (18)</span>
+        </div>
+        <svg id="chart-void" role="img" aria-label="All 5,601 matches to scale: silence, replies, and dates"></svg>
+        <figcaption>Drawn to scale. Yes, really. The date segment is about two pixels wide.</figcaption>
+        <details class="table-view"><summary>View as table</summary><div id="table-void"></div></details>
+      </figure>
+      <p class="aside" style="margin-top: 18px;">
+        96.3% of matching is mutual agreement to never speak. The rest of this page lives inside that blue stripe.
+        Let's zoom in.
+      </p>
+    </section>
+
+    <!-- ACT II — THE SLIVER -->
+    <section class="story">
+      <p class="act">Act II</p>
+      <h2>Inside the Sliver, Every Date Flowed Through an Ask</h2>
+      <p class="body">
+        The 207 conversations sort themselves by one question: did anyone actually propose a plan?
+        A <strong>concrete ask</strong> — a day, a time, a place — converted at 16%.
+        A vague “we should hang out sometime” managed 7%, which is what “sometime” deserves.
+        And when nobody asked at all: 1 date in 66, presumably by accident.
+      </p>
+      <figure>
+        <div class="legend">
+          <span class="key"><span class="swatch" style="background: var(--accent)"></span>Flows that ended in a date</span>
+          <span class="key"><span class="swatch" style="background: var(--deemph)"></span>Everything else</span>
+        </div>
+        <svg id="chart-sankey" role="img" aria-label="Flow of 207 conversations through invite type to meeting outcome"></svg>
+        <figcaption>All 207 conversations, split by the kind of first invitation, then by outcome. Ribbon width is the number of conversations.</figcaption>
+        <details class="table-view"><summary>View as table</summary><div id="table-sankey"></div></details>
+      </figure>
+
+      <div class="stat-pair" id="ask-timing-tiles"></div>
+      <p class="aside" style="margin-top: 14px;">
+        Here's the surprise: asking <em>early</em> doesn't matter. Asks in the first five messages and asks after
+        message five convert identically. Timing is a myth. Commitment isn't — say <em>Thursday</em>, not <em>sometime</em>.
+      </p>
+    </section>
+
+    <!-- ACT III — TIME OF DEATH -->
+    <section class="story">
+      <p class="act">Act III</p>
+      <h2>Most Conversations Die Before Dinner</h2>
+      <p class="body">
+        Conversations on Hinge don't end. They just… stop. Half of all conversations were over —
+        last message sent, forever — within <span id="stat-median-life">—</span> hours of starting.
+        Only <span id="stat-surv-24">—</span>% were still alive a day later, and
+        <span id="stat-surv-48">—</span>% made it past two days.
+        But the ones that crossed 72 hours became dates at <span id="stat-lift-72">—</span>× the rate of the ones that didn't.
+      </p>
+      <figure>
+        <svg id="chart-survival" role="img" aria-label="Survival curve of conversation lifespans over one week"></svg>
+        <figcaption>Kaplan–Meier survival of all conversations with measurable lifespans, over their first week. Markers at 24, 48, and 72 hours.</figcaption>
+        <details class="table-view"><summary>View as table</summary><div id="table-survival"></div></details>
+      </figure>
+      <p class="aside" style="margin-top: 18px;">
+        If a conversation is still breathing on day three, it isn't small talk anymore. It's a plan forming.
+      </p>
+    </section>
+
+    <!-- ACT IV — DEPTH -->
+    <section class="story">
+      <p class="act">Act IV</p>
+      <h2>Depth Is Destiny</h2>
+      <p class="body">
+        Every extra stretch of conversation roughly triples the odds. Chats that died within five messages became dates
+        1.6% of the time. Cross forty messages and it's 26% — one in four. The median conversation that became a date
+        ran <strong>59 messages</strong>. The median one that didn't ran 10.
+      </p>
+      <figure>
+        <svg id="chart-depth" role="img" aria-label="Meeting rate by conversation length bucket"></svg>
+        <figcaption>Meeting rate by total messages exchanged, with 95% Wilson confidence intervals. Darker = deeper conversation.</figcaption>
+        <details class="table-view"><summary>View as table</summary><div id="table-depth"></div></details>
+      </figure>
+      <p class="aside" style="margin-top: 18px;">
+        A caution from the methods desk: message count doesn't <em>cause</em> dates — mutual interest causes both.
+        Nobody ever typed their way out of indifference.
+      </p>
+    </section>
+
+    <!-- ACT V — THE MYTH AUTOPSY -->
+    <section class="story">
+      <p class="act">Act V</p>
+      <h2>The Data Reviewed Your Texting Style. It Shrugged.</h2>
+      <p class="body">
+        The working theory was that curiosity wins — ask more questions, keep messages tight, be charming.
+        The data disagrees, gently. The conversations that became dates asked slightly <em>fewer</em> questions and
+        wrote slightly <em>shorter</em> messages than the ones that went nowhere. Nearly identical, honestly.
+        Chemistry, it turns out, does not read your drafts.
+      </p>
+      <figure>
+        <div class="legend">
+          <span class="key"><span class="dot" style="background: var(--accent)"></span>Conversations that became dates</span>
+          <span class="key"><span class="dot" style="background: var(--deemph)"></span>Everything else</span>
+        </div>
+        <svg id="chart-myth" role="img" aria-label="Opening-style comparison between date and non-date conversations"></svg>
+        <figcaption>Median opening style (first 10 messages) for the 18 date conversations vs. the other 189. The gaps are small — and they point the “wrong” way.</figcaption>
+        <details class="table-view"><summary>View as table</summary><div id="table-myth"></div></details>
+      </figure>
+    </section>
+
+    <!-- ACT VI — MARATHONS -->
+    <section class="story">
+      <p class="act">Act VI</p>
+      <h2>Dates Are Marathons, Not Sprints</h2>
+      <p class="body">
+        The typical conversation that led to a date stayed alive for <strong>45 hours</strong>; the typical one that
+        didn't lasted 41 minutes. And here's the tender part: in the date conversations, the first invitation showed up
+        early — and then a median of <strong>57 more messages</strong> followed it. The ask wasn't a closing move.
+        It was a doorway, and both people kept talking on the other side of it.
+      </p>
+      <figure>
+        <div class="legend">
+          <span class="key"><span class="dot" style="background: var(--accent)"></span>Became a date (18)</span>
+          <span class="key"><span class="dot" style="background: var(--deemph)"></span>Didn't (184)</span>
+        </div>
+        <svg id="chart-scatter" role="img" aria-label="Conversation lifespan versus message count, dates highlighted"></svg>
+        <figcaption>Each dot is a conversation: lifespan (hours, log scale) vs. messages exchanged (log scale). Sub-3-minute chats sit at the left edge.</figcaption>
+        <details class="table-view"><summary>View the 18 dates as a table</summary><div id="table-scatter"></div></details>
+      </figure>
+    </section>
+
+    <!-- ACT VII — RHYTHMS -->
+    <section class="story">
+      <p class="act">Act VII</p>
+      <h2>Chats Born on Monday Go Places</h2>
+      <p class="body">
+        Conversations that started early in the week converted best — <span id="stat-monday">—</span> of Monday starters
+        became dates. Friday starters went zero for thirty-two, a result so clean it feels personal.
+        Small samples, wide error bars — but apparently romance is a weekday project.
+      </p>
+      <figure>
+        <svg id="chart-weekday" role="img" aria-label="Meeting rate by the weekday the conversation started"></svg>
+        <figcaption>Meeting rate by the weekday of the first message, with 95% Wilson confidence intervals. n per bar shown under the axis.</figcaption>
+        <details class="table-view"><summary>View as table</summary><div id="table-weekday"></div></details>
+      </figure>
+      <p class="body" style="margin-top: 28px;">
+        Zoom all the way out and six years of activity looks like weather: long droughts, two spring storms,
+        and one very determined 2025.
+      </p>
+      <figure>
+        <svg id="chart-timeline" role="img" aria-label="Messages per month across six years"></svg>
+        <figcaption>Messages per month, 2022–2025. Quiet years, a 2024 warm-up, and the 2025 era where most of the 18 dates happened.</figcaption>
+        <details class="table-view"><summary>View as table</summary><div id="table-timeline"></div></details>
+      </figure>
+    </section>
+
+    <!-- ACT VIII — THE OPENER AUTOPSY (conditional) -->
+    <section class="story" id="opener-section">
+      <p class="act">Act VIII</p>
+      <h2>The Opener Autopsy</h2>
+      <p class="body">
+        Does the cheesy pickup line work? Does “hey” doom you? This section measures opener style —
+        cheese markers, low-effort greetings, length, emoji — against what actually happened next.
+      </p>
+      <div class="locked-card" id="opener-locked">
+        <strong>🔒 Locked — this needs the message text, which never leaves your machine.</strong><br /><br />
+        The repo stores no chat content (on purpose). To unlock this section, place your Hinge export at
+        <code>data/matches.json</code> and run <code>python3 rebuild_features.py</code> — it now extracts
+        privacy-safe opener features (a cheesiness score, low-effort detection, length, emoji count) as plain numbers,
+        no text. Re-deploy and the charts appear here automatically.
       </div>
-      <div class="stat-card">
-        <p class="stat-value" id="personal-chats">—</p>
-        <p class="stat-label">Got Response</p>
+      <div id="opener-charts" hidden>
+        <figure>
+          <svg id="chart-opener" role="img" aria-label="Reply and date rates by opener style"></svg>
+          <figcaption>Meeting rate by opener style, with 95% Wilson confidence intervals.</figcaption>
+          <details class="table-view"><summary>View as table</summary><div id="table-opener"></div></details>
+        </figure>
       </div>
-      <div class="stat-card">
-        <p class="stat-value" id="personal-met">—</p>
-        <p class="stat-label">Met in Person</p>
-      </div>
-      <div class="stat-card">
-        <p class="stat-value" id="personal-conversion">—</p>
-        <p class="stat-label">Match→Meet Rate</p>
-      </div>
-    </div>
-    <div class="funnel-container">
-      <h3 style="font-family: 'Libre Franklin', sans-serif; font-size: 1rem; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.05em;">The Reality: Your Conversion Funnel</h3>
-      <div id="funnel-stages"></div>
-    </div>
-    <div class="insight-box">
-      <h3>What Works For You</h3>
-      <p id="personal-insight">Loading your personal insights...</p>
-    </div>
-    <div style="margin-top: 24px;">
-      <h3 style="font-family: 'Libre Franklin', sans-serif; font-size: 1rem; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 0.05em;">Your Activity Timeline</h3>
-      <svg id="timeline-chart" role="img" aria-label="Your activity over time"></svg>
-      <p style="font-size: 0.85rem; margin: 8px 0 0; opacity: 0.9;" id="timeline-summary">Loading timeline...</p>
-    </div>
-  </section>
+    </section>
 
-  <section id="scrolly">
-    <article class="step">
-      <h2>The Drop</h2>
-      <p class="body">
-        In our dataset, half of conversations ended by about <span id="stat-median-life"></span> hours. 
-        Only <span id="stat-surv-24"></span>% survive 24 hours, and just <span id="stat-surv-48"></span>% make it to 48—what we call the <strong>Cliff</strong>.
-        Threads that survive to 72 hours are <span id="stat-lift-survive72"></span>× as likely to become a date as those that die earlier.
+    <!-- CLOSING -->
+    <div class="closing">
+      <p class="kicker">The whole story, one number at a time</p>
+      <p class="big">5,601 → 207 → 141 → 18</p>
+      <p>
+        Matched, replied, someone asked, and eighteen times a person from a screen became a person across a table.
       </p>
-      <figure>
-        <figcaption>A Kaplan–Meier curve shows a steep drop near the 48-hour mark. Shaded bands indicate hourly hazard.</figcaption>
-        <svg id="chart-survival" role="img" aria-label="Survival of conversations over hours since match"></svg>
-      </figure>
-    </article>
-
-    <article class="step">
-      <h2>Ask Early. Be Specific.</h2>
-      <p class="body">
-        When the first invitation appears within the first ten messages—and names a time or place—meeting rates climb.
-        Concrete asks in the <em><span id="stat-best-invite-bin"></span></em> window convert best.
+      <p>
+        The data can't tell you which conversations will make it. It can only tell you what the survivors had in common:
+        somebody proposed something real, and then — this is the whole secret — <em>neither person let it die.</em>
       </p>
-      <figure>
-        <figcaption>Meeting rate by the message number of the first invitation, with 95% confidence intervals; colored by whether the ask was concrete.</figcaption>
-        <svg id="chart-invite" role="img" aria-label="Meeting rates by first invite timing and concreteness"></svg>
-      </figure>
-    </article>
-
-    <article class="step">
-      <h2>Short &amp; Curious Beats Long &amp; Polished</h2>
-      <p class="body">
-        Conversations where the first ten messages skew shorter and include questions more often have higher odds of meeting.
-        The “Short &amp; Curious” quadrant yields a meeting rate of <span id="stat-short-curious-rate"></span>% vs <span id="stat-long-silent-rate"></span>% for “Long &amp; Silent.”
-      </p>
-      <figure>
-        <figcaption>Each tile shows meeting propensity by question density and message length in the opening exchange.</figcaption>
-        <svg id="chart-curiosity" role="img" aria-label="Meeting rates by question density and message length quadrants"></svg>
-      </figure>
-    </article>
-
-    <article class="step">
-      <h2>Tempo Matters</h2>
-      <p class="body">
-        Reply too fast and it can feel robotic; wait too long and momentum dies. In this dataset, the sweet spot for a first message was 
-        <span id="stat-sweet-spot"></span>, with a peak meeting rate of <span id="stat-peak-delay-rate"></span>%.
-      </p>
-      <figure>
-        <figcaption>Meeting rates across first-message delay bins. The 1–6 hour band stands out.</figcaption>
-        <svg id="chart-delay" role="img" aria-label="Meeting rates by first-message delay bins"></svg>
-      </figure>
-    </article>
-
-    <article class="step">
-      <h2>The Weekly Weather of Asking</h2>
-      <p class="body">
-        Certain hours invite yeses. A heatmap of the first concrete asks shows hot lanes like <span id="stat-hotlane"></span>.
-      </p>
-      <figure>
-        <figcaption>Propensity (normalized) of making a concrete invite by day and hour.</figcaption>
-        <svg id="chart-heatmap" role="img" aria-label="When concrete invites tend to happen"></svg>
-      </figure>
-    </article>
-  </section>
-
-  <footer class="methods">
-    <button id="toggle-methods" aria-expanded="false">Methods &amp; Caveats</button>
-    <div id="methods-body" hidden>
-      <p><strong>Lifespan:</strong> A conversation’s lifespan is the time between its first and last message. Threads still active past the 168-hour window are right-censored.</p>
-      <p><strong>Meeting:</strong> Conversations marked “Yes” in the dataset’s <code>met</code> field. Conversations with no survey answer are counted as not having met, matching the funnel statistics.</p>
-      <p><strong>Confidence intervals:</strong> Binomial Wilson intervals for proportions; survival via Kaplan–Meier; hazard smoothed with a moving window.</p>
-      <p><strong>Visibility:</strong> We only observe one side of the messages; timing signals are approximate. Results are descriptive, not causal.</p>
     </div>
-  </footer>
+
+    <footer class="note">
+      <p><strong>Methods &amp; caveats:</strong> “Date” = conversations marked “Yes” in the export's <code>met</code> survey field;
+      unanswered surveys count as no date, so every rate here is a floor. Invite detection is keyword-based on visible messages
+      (the export contains only one side of each chat). Lifespan is first-to-last message; single-burst chats with zero measured
+      span sit at the scatter's left edge. Confidence intervals are binomial Wilson; survival is Kaplan–Meier with censoring past
+      one week. All of it is descriptive, not causal — deep conversations may cause dates, or dates-in-the-making may cause deep
+      conversations. With 18 positive events, treat every sub-split as a good story, not a law of nature.</p>
+      <p>No chat content, names, or identifiers are stored in this site's data — only counts, durations, and rates.</p>
+    </footer>
+  </div>
 
   <div class="tooltip" role="tooltip" id="tooltip" aria-hidden="true"></div>
 
   <script src="./vendor/d3.v7.min.js"></script>
   <script>
-    const state = {
-      concreteOnly: true,
-      inviteTimingMethod: 'exact',
-      data: [],
-    };
+    const DARK = window.matchMedia('(prefers-color-scheme: dark)');
 
-    const INVITE_BINS = [
-      { id: '1-2', label: 'messages 1–2', min: -Infinity, max: 2 },
-      { id: '3-5', label: 'messages 3–5', min: 3, max: 5 },
-      { id: '6-10', label: 'messages 6–10', min: 6, max: 10 },
-      { id: '11-20', label: 'messages 11–20', min: 11, max: 20 },
-      { id: '21+', label: '21+ / never', min: 21, max: Infinity },
-    ];
+    // Ordinal blue ramps — validated with the palette validator (--ordinal), both modes
+    const RAMP_LIGHT = ['#86b6ef', '#5598e7', '#2a78d6', '#1c5cab'];
+    const RAMP_DARK  = ['#6da7ec', '#3987e5', '#256abf', '#184f95'];
+    const ramp = () => DARK.matches ? RAMP_DARK : RAMP_LIGHT;
+    const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
+    /* ---------------- shared chrome ---------------- */
     const tooltip = document.getElementById('tooltip');
-    const toggleIndicator = document.querySelector('.toggle-indicator');
-
-    function showTooltip(html, event) {
-      tooltip.innerHTML = html;
+    function showTooltip(rows, event) {
+      tooltip.replaceChildren();
+      rows.forEach(r => {
+        const div = document.createElement('div');
+        const val = document.createElement('span');
+        val.className = 'val';
+        val.textContent = r.value;
+        div.appendChild(val);
+        if (r.label) div.appendChild(document.createTextNode(' ' + r.label));
+        tooltip.appendChild(div);
+      });
       tooltip.style.opacity = 1;
-      tooltip.style.left = `${event.clientX + 12}px`;
-      tooltip.style.top = `${event.clientY + 12}px`;
       tooltip.setAttribute('aria-hidden', 'false');
+      positionTooltip(event);
     }
-
+    function positionTooltip(event) {
+      const pad = 14;
+      const w = tooltip.offsetWidth, h = tooltip.offsetHeight;
+      let x = event.clientX + pad, y = event.clientY + pad;
+      if (x + w > window.innerWidth - 8) x = event.clientX - w - pad;
+      if (y + h > window.innerHeight - 8) y = event.clientY - h - pad;
+      tooltip.style.left = `${x}px`;
+      tooltip.style.top = `${y}px`;
+    }
     function hideTooltip() {
       tooltip.style.opacity = 0;
       tooltip.setAttribute('aria-hidden', 'true');
     }
 
-    function parseDate(value) {
-      if (!value) return null;
-      const date = new Date(value);
-      return isNaN(date) ? null : date;
-    }
-
-    function differenceInHours(a, b) {
-      return (b.getTime() - a.getTime()) / (1000 * 60 * 60);
-    }
-
-    function formatPercent(value, digits = 0) {
-      if (value === null || value === undefined || isNaN(value)) return '—';
-      return (value * 100).toFixed(digits);
-    }
-
-    function formatRate(value, digits = 1) {
-      if (value === null || value === undefined || isNaN(value)) return '—';
-      return value.toFixed(digits);
-    }
-
-    function wilsonInterval(successes, total, z = 1.96) {
+    function wilson(successes, total, z = 1.96) {
       if (!total) return null;
       const p = successes / total;
       const denom = 1 + (z ** 2) / total;
       const centre = p + (z ** 2) / (2 * total);
       const margin = z * Math.sqrt((p * (1 - p) + (z ** 2) / (4 * total)) / total);
-      const lower = Math.max(0, (centre - margin) / denom);
-      const upper = Math.min(1, (centre + margin) / denom);
-      return { lower, upper };
+      return { lower: Math.max(0, (centre - margin) / denom), upper: Math.min(1, (centre + margin) / denom) };
     }
 
-    // Meeting = explicitly marked "Yes". Most conversations have no survey answer;
-    // treating them as "did not meet" matches the funnel stats (denominator = all chats)
-    // and avoids survivorship bias from the handful of answered surveys.
-    function metValue(entry) {
-      return entry === 'Yes';
+    function buildTable(containerId, headers, rows) {
+      const container = document.getElementById(containerId);
+      container.replaceChildren();
+      const table = document.createElement('table');
+      const thead = document.createElement('thead');
+      const trh = document.createElement('tr');
+      headers.forEach(h => { const th = document.createElement('th'); th.textContent = h; trh.appendChild(th); });
+      thead.appendChild(trh);
+      table.appendChild(thead);
+      const tbody = document.createElement('tbody');
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        r.forEach(cell => { const td = document.createElement('td'); td.textContent = String(cell); tr.appendChild(td); });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      container.appendChild(table);
     }
 
-    function clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
+    // rounded-top bar path (4px data-end, square baseline)
+    function barPath(x0, y0, w, baseline) {
+      const r = Math.min(4, w / 2);
+      if (y0 >= baseline) return `M${x0},${baseline} L${x0 + w},${baseline}`;
+      return `M${x0},${baseline} L${x0},${y0 + r} Q${x0},${y0} ${x0 + r},${y0} L${x0 + w - r},${y0} Q${x0 + w},${y0} ${x0 + w},${y0 + r} L${x0 + w},${baseline}Z`;
     }
 
-    function movingAverage(values, window = 3) {
-      if (!values.length) return [];
-      return values.map((v, i) => {
-        const start = Math.max(0, i - Math.floor(window / 2));
-        const end = Math.min(values.length, i + Math.ceil(window / 2));
-        const slice = values.slice(start, end);
-        return d3.mean(slice);
+    const met = d => d.met === 'Yes';
+
+    /* ---------------- KPI row ---------------- */
+    function renderKpis(funnel, data) {
+      const dates = data.filter(met).length;
+      const odds = Math.round(funnel.total_matches / dates);
+      const tiles = [
+        { label: 'Matches', value: funnel.total_matches.toLocaleString(), sub: 'six years of yes' },
+        { label: 'Replied', value: data.length.toLocaleString(), sub: `${(data.length / funnel.total_matches * 100).toFixed(1)}% of matches` },
+        { label: 'Became dates', value: String(dates), sub: `${(dates / data.length * 100).toFixed(1)}% of conversations` },
+        { label: 'Odds per match', value: `1 in ${odds}`, sub: 'match → date' },
+      ];
+      const row = document.getElementById('kpi-row');
+      row.replaceChildren();
+      tiles.forEach(t => {
+        const tile = document.createElement('div');
+        tile.className = 'stat-tile';
+        const label = document.createElement('p'); label.className = 'label'; label.textContent = t.label;
+        const value = document.createElement('p'); value.className = 'value'; value.textContent = t.value;
+        const sub = document.createElement('p'); sub.className = 'sub'; sub.textContent = t.sub;
+        tile.append(label, value, sub);
+        row.appendChild(tile);
       });
     }
 
-    function computeSurvival(records, maxHours = 168) {
-      const survivalRecords = [];
-      for (const d of records) {
-        const start = parseDate(d.first_msg_time) || parseDate(d.match_time);
-        const last = parseDate(d.last_msg_time);
-        let span = Number.isFinite(d.duration_hours) ? d.duration_hours : null;
-        if ((span === null || isNaN(span)) && start && last) {
-          span = differenceInHours(start, last);
-        }
-        if (!Number.isFinite(span)) continue;
-        // Some exports have unsorted chats; a reversed pair is still a valid span
-        span = Math.abs(span);
-        const cappedTime = Math.min(span, maxHours);
-        const event = span <= maxHours;
-        const met = metValue(d.met);
-        survivalRecords.push({
-          time: cappedTime,
-          rawTime: span,
-          baseSpan: span,
-          event,
-          met,
-        });
-      }
+    /* ---------------- Act I: the void bar ---------------- */
+    function renderVoid(funnel, data) {
+      const svg = d3.select('#chart-void');
+      svg.selectAll('*').remove();
+      const width = 740, height = 96;
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
 
-      if (!survivalRecords.length) {
-        return {
-          curve: [
-            { time: 0, survival: 1 },
-            { time: maxHours, survival: 1 },
-          ],
-          hazard: [],
-          survivalAt: (t) => 1,
-          medianLife: null,
-          surviveMetRate: null,
-          dieMetRate: null,
-        };
-      }
+      const dates = data.filter(met).length;
+      const replied = data.length - dates;
+      const silence = funnel.total_matches - data.length;
+      const total = funnel.total_matches;
 
-      const sorted = survivalRecords
-        .slice()
-        .sort((a, b) => (a.time - b.time) || (b.event - a.event));
+      const segs = [
+        { key: 'silence', label: 'Matched, then silence', value: silence, color: cssVar('--deemph') },
+        { key: 'replied', label: 'Replied, no date', value: replied, color: cssVar('--accent-soft') },
+        { key: 'date', label: 'Became a date', value: dates, color: cssVar('--accent') },
+      ];
 
-      const aggregated = [];
-      for (const rec of sorted) {
-        const lastAgg = aggregated[aggregated.length - 1];
-        if (lastAgg && Math.abs(lastAgg.time - rec.time) < 1e-6) {
-          if (rec.event) lastAgg.deaths += 1; else lastAgg.censored += 1;
-        } else {
-          aggregated.push({
-            time: rec.time,
-            deaths: rec.event ? 1 : 0,
-            censored: rec.event ? 0 : 1,
-          });
-        }
-      }
+      const gap = 2, barH = 40, barY = 24;
+      let x = 0;
+      const usable = width - gap * (segs.length - 1);
+      segs.forEach(s => {
+        s.x = x;
+        s.w = Math.max(usable * s.value / total, 1.5); // dates ≈ 2px — the honest joke
+        x += s.w + gap;
+      });
 
-      let atRisk = sorted.length;
-      let survival = 1;
-      const curve = [{ time: 0, survival: 1 }];
-      for (const { time, deaths, censored } of aggregated) {
-        const prev = curve[curve.length - 1];
-        curve.push({ time, survival: prev.survival });
-        if (deaths > 0 && atRisk > 0) {
-          survival *= (1 - deaths / atRisk);
-        }
-        curve.push({ time, survival });
-        atRisk -= (deaths + censored);
-        if (atRisk <= 0) break;
-      }
-      const lastPoint = curve[curve.length - 1];
-      if (lastPoint.time < maxHours) {
-        curve.push({ time: maxHours, survival: lastPoint.survival });
-      }
+      svg.selectAll('rect')
+        .data(segs)
+        .join('rect')
+        .attr('x', d => d.x)
+        .attr('y', barY)
+        .attr('width', d => d.w)
+        .attr('height', barH)
+        .attr('rx', 3)
+        .attr('fill', d => d.color)
+        .on('pointermove', (event, d) => showTooltip([
+          { value: d.value.toLocaleString(), label: d.label.toLowerCase() },
+          { value: `${(d.value / total * 100).toFixed(2)}%`, label: 'of all matches' },
+        ], event))
+        .on('pointerleave', hideTooltip);
 
-      const hazardBuckets = Array.from({ length: maxHours }, () => ({ deaths: 0, censored: 0 }));
-      for (const rec of sorted) {
-        const bucket = Math.min(maxHours - 1, Math.floor(clamp(rec.time - 1e-6, 0, maxHours - 1)));
-        if (rec.event && rec.time < maxHours) {
-          hazardBuckets[bucket].deaths += 1;
-        } else {
-          hazardBuckets[bucket].censored += 1;
-        }
-      }
-      const hazardSeries = [];
-      atRisk = sorted.length;
-      for (let h = 0; h < hazardBuckets.length; h += 1) {
-        const { deaths, censored } = hazardBuckets[h];
-        const hazard = atRisk > 0 ? deaths / atRisk : 0;
-        hazardSeries.push({ hour: h + 0.5, hazard, atRisk });
-        atRisk -= (deaths + censored);
-        if (atRisk <= 0) {
-          for (let rest = h + 1; rest < hazardBuckets.length; rest += 1) {
-            hazardSeries.push({ hour: rest + 0.5, hazard: 0, atRisk: 0 });
-          }
-          break;
-        }
-      }
-      const smoothed = movingAverage(hazardSeries.map(d => d.hazard), 5);
-      hazardSeries.forEach((d, i) => { d.smooth = smoothed[i]; });
+      // Leader line to the 2px date sliver — otherwise nobody will ever find it
+      const dateSeg = segs[2];
+      const lx = dateSeg.x + dateSeg.w / 2;
+      svg.append('line')
+        .attr('x1', lx).attr('x2', lx)
+        .attr('y1', barY - 6).attr('y2', barY + barH * 0.35)
+        .attr('stroke', cssVar('--text-primary')).attr('stroke-width', 1)
+        .attr('pointer-events', 'none');
+      svg.append('text')
+        .attr('x', Math.min(lx, width - 150)).attr('y', barY - 12)
+        .attr('text-anchor', 'end')
+        .attr('font-size', 11.5).attr('font-weight', 600)
+        .attr('fill', cssVar('--text-primary'))
+        .attr('pointer-events', 'none')
+        .text('the 18 dates are here →');
 
-      function survivalAt(time) {
-        const relevant = curve.filter(pt => pt.time <= time);
-        if (!relevant.length) return 1;
-        return relevant[relevant.length - 1].survival;
-      }
+      svg.append('text')
+        .attr('x', 0).attr('y', barY + barH + 20)
+        .attr('font-size', 11).attr('fill', cssVar('--text-muted'))
+        .text('0');
+      svg.append('text')
+        .attr('x', width).attr('y', barY + barH + 20)
+        .attr('text-anchor', 'end')
+        .attr('font-size', 11).attr('fill', cssVar('--text-muted'))
+        .text(total.toLocaleString() + ' matches');
+    }
 
-      let medianLife = null;
-      for (const pt of curve) {
-        if (pt.survival <= 0.5) {
-          medianLife = pt.time;
-          break;
-        }
-      }
-
-      const survivors72 = survivalRecords.filter(d => d.rawTime >= 72 || !d.event);
-      const deathsBefore72 = survivalRecords.filter(d => d.event && d.rawTime < 72);
-      const surviveMetRate = summarizeRate(survivors72);
-      const dieMetRate = summarizeRate(deathsBefore72);
-
+    /* ---------------- Act II: sankey ---------------- */
+    function sankeyModel(data) {
+      const invited = data.filter(d => d.first_invite_msg_index !== null && d.first_invite_msg_index !== undefined);
+      const concrete = invited.filter(d => d.invite_is_concrete === true);
+      const loose = invited.filter(d => d.invite_is_concrete !== true);
+      const none = data.filter(d => d.first_invite_msg_index === null || d.first_invite_msg_index === undefined);
+      const count = arr => ({ total: arr.length, met: arr.filter(met).length });
       return {
-        curve,
-        hazard: hazardSeries,
-        survivalAt,
-        medianLife,
-        surviveMetRate,
-        dieMetRate,
+        concrete: count(concrete), loose: count(loose), none: count(none),
+        total: data.length, totalMet: data.filter(met).length,
       };
     }
 
-    function summarizeRate(records) {
-      const valid = records.filter(d => d.met !== null && d.met !== undefined);
-      if (!valid.length) return { rate: null, total: 0, successes: 0, ci: null };
-      const successes = valid.filter(d => (d.met === true || d.met === 'Yes' || d === true)).length;
-      const total = valid.length;
-      const rate = successes / total;
-      const ci = wilsonInterval(successes, total);
-      return { rate, total, successes, ci };
-    }
+    function renderSankey(model) {
+      const svg = d3.select('#chart-sankey');
+      svg.selectAll('*').remove();
+      const width = 740, height = 380;
+      const margin = { top: 8, right: 150, bottom: 8, left: 150 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
 
-    function summarizeRateFromValues(values) {
-      const valid = values.filter(d => d !== null);
-      if (!valid.length) return { rate: null, total: 0, successes: 0, ci: null };
-      const successes = valid.filter(Boolean).length;
-      const total = valid.length;
-      const rate = successes / total;
-      const ci = wilsonInterval(successes, total);
-      return { rate, total, successes, ci };
-    }
+      const innerW = width - margin.left - margin.right;
+      const innerH = height - margin.top - margin.bottom;
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-    function binFirstInvite(records) {
-      const results = [];
-      INVITE_BINS.forEach(bin => {
-        results.push({ ...bin, concrete: true, values: [] });
-        results.push({ ...bin, concrete: false, values: [] });
-      });
+      const accent = cssVar('--accent');
+      const deemph = cssVar('--deemph');
+      const ink = cssVar('--text-primary');
+      const inkSec = cssVar('--text-secondary');
 
-      function findBin(index) {
-        if (!Number.isFinite(index)) return INVITE_BINS[INVITE_BINS.length - 1];
-        return INVITE_BINS.find(bin => index >= (Number.isFinite(bin.min) ? bin.min : -Infinity) && index <= bin.max) || INVITE_BINS[INVITE_BINS.length - 1];
-      }
+      const scale = innerH * 0.92 / model.total;
+      const nodeW = 10, gap = 14;
+      const x0 = 0, x1 = innerW / 2 - nodeW / 2, x2 = innerW - nodeW;
 
-      records.forEach(d => {
-        const idx = Number.isFinite(d.first_invite_msg_index) ? d.first_invite_msg_index : null;
-        const hasInvite = idx !== null;
-        const bin = findBin(idx);
-        const isConcrete = hasInvite ? d.invite_is_concrete === true : false;
-        const target = results.find(r => r.id === bin.id && r.concrete === isConcrete);
-        if (!target) return;
-        const met = metValue(d.met);
-        if (met === null) return;
-        target.values.push(met);
-      });
+      const src = { x: x0, y0: (innerH - model.total * scale) / 2, label: 'Conversations', value: model.total };
+      src.y1 = src.y0 + model.total * scale;
 
-      return results.map(result => {
-        const summary = summarizeRateFromValues(result.values || []);
-        return {
-          id: result.id,
-          label: result.label,
-          min: result.min,
-          max: result.max,
-          concrete: result.concrete,
-          count: summary.total,
-          successes: summary.successes,
-          rate: summary.rate,
-          ci: summary.ci,
-        };
-      });
-    }
-
-    function quadrantSummary(records) {
-      const quadrants = [
-        { id: 'short-curious', label: 'Short & Curious', question: 'high', length: 'short' },
-        { id: 'short-silent', label: 'Short & Silent', question: 'low', length: 'short' },
-        { id: 'long-curious', label: 'Long & Curious', question: 'high', length: 'long' },
-        { id: 'long-silent', label: 'Long & Silent', question: 'low', length: 'long' },
+      const l1 = [
+        { key: 'concrete', label: 'Concrete ask', ...model.concrete },
+        { key: 'loose', label: 'Vague ask', ...model.loose },
+        { key: 'none', label: 'No ask', ...model.none },
       ];
-      const results = quadrants.map(q => ({ ...q, values: [] }));
-      for (const d of records) {
-        if (d.question_density_first10 === null || d.median_len_first10 === null) continue;
-        const questionsHigh = d.question_density_first10 > 0.3;
-        const lengthLong = d.median_len_first10 > 120;
-        const quadrant = results.find(q =>
-          q.question === (questionsHigh ? 'high' : 'low') &&
-          q.length === (lengthLong ? 'long' : 'short')
-        );
-        if (!quadrant) continue;
-        const met = metValue(d.met);
-        if (met === null) continue;
-        quadrant.values.push(met);
-      }
-      results.forEach(q => {
-        const summary = summarizeRateFromValues(q.values);
-        q.rate = summary.rate;
-        q.count = summary.total;
-      });
-      return results;
-    }
+      let y = (innerH - (model.total * scale + gap * (l1.length - 1))) / 2;
+      l1.forEach(nd => { nd.x = x1; nd.y0 = y; nd.y1 = y + nd.total * scale; y = nd.y1 + gap; });
 
-    function delaySummary(records) {
-      const bins = [
-        { id: 'lt10m', label: '<10 minutes', min: 0, max: 10 },
-        { id: '10-60m', label: '10–60 minutes', min: 10, max: 60 },
-        { id: '1-3h', label: '1–3 hours', min: 60, max: 180 },
-        { id: '3-6h', label: '3–6 hours', min: 180, max: 360 },
-        { id: '6-24h', label: '6–24 hours', min: 360, max: 1440 },
-        { id: '1-3d', label: '1–3 days', min: 1440, max: 4320 },
-        { id: 'gt3d', label: '>3 days', min: 4320, max: Infinity },
+      const l2 = [
+        { key: 'met', label: 'Became a date', total: model.totalMet },
+        { key: 'nodate', label: 'No date', total: model.total - model.totalMet },
       ];
-      const results = bins.map(bin => ({ ...bin, values: [] }));
-      for (const d of records) {
-        const delay = d.first_msg_delay_minutes;
-        if (!Number.isFinite(delay)) continue;
-        const bin = results.find(b => delay >= b.min && delay < b.max);
-        if (!bin) continue;
-        const met = metValue(d.met);
-        if (met === null) continue;
-        bin.values.push(met);
-      }
-      results.forEach(bin => {
-        const summary = summarizeRateFromValues(bin.values);
-        bin.rate = summary.rate;
-        bin.count = summary.total;
-        bin.ci = summary.ci;
-      });
-      return results;
-    }
+      y = (innerH - (model.total * scale + gap)) / 2;
+      l2.forEach(nd => { nd.x = x2; nd.y0 = y; nd.y1 = y + nd.total * scale; y = nd.y1 + gap; });
 
-    function computeInviteTiming(records) {
-      const invites = [];
-      const methodsUsed = new Set();
-      for (const d of records) {
-        const match = parseDate(d.match_time);
-        const firstMsg = parseDate(d.first_msg_time);
-        const lastMsg = parseDate(d.last_msg_time);
-        let inviteTime = null;
-        if (d.first_invite_time) {
-          const parsed = parseDate(d.first_invite_time);
-          if (parsed) {
-            inviteTime = parsed;
-            methodsUsed.add('Exact timestamp');
-          }
-        }
-        if (!inviteTime && firstMsg) {
-          inviteTime = firstMsg;
-          methodsUsed.add('First message proxy');
-        }
-        if (!inviteTime && match) {
-          inviteTime = match;
-          methodsUsed.add('Match time proxy');
-        }
-        if (!inviteTime && lastMsg) {
-          inviteTime = lastMsg;
-          methodsUsed.add('Last message proxy');
-        }
-        if (!inviteTime) continue;
-        invites.push({
-          inviteTime,
-          concrete: d.invite_is_concrete === true,
-        });
-      }
-      if (methodsUsed.size === 0) {
-        state.inviteTimingMethod = 'No timestamp available';
-      } else if (methodsUsed.size === 1) {
-        state.inviteTimingMethod = Array.from(methodsUsed)[0];
-      } else if (methodsUsed.has('Exact timestamp') && methodsUsed.size === 2) {
-        const other = Array.from(methodsUsed).find(method => method !== 'Exact timestamp');
-        state.inviteTimingMethod = other ? `Exact timestamp + ${other}` : 'Exact timestamp';
-      } else {
-        state.inviteTimingMethod = 'Mixed timing estimates';
-      }
-      return invites;
-    }
-
-    function computeHeatmap(invites, matches, onlyConcrete = true) {
-      const dayHours = Array.from({ length: 7 }, (_, day) => (
-        Array.from({ length: 24 }, (_, hour) => ({ day, hour, invites: 0, matches: 0, propensity: 0 }))
-      ));
-      matches.forEach(date => {
-        if (!date) return;
-        const day = date.getDay();
-        const hour = date.getHours();
-        dayHours[day][hour].matches += 1;
+      const links = [];
+      let srcOff = src.y0;
+      l1.forEach(nd => {
+        links.push({ from: { x: x0 + nodeW, y: srcOff }, to: { x: x1, y: nd.y0 }, value: nd.total, toMet: false,
+          desc: [`${nd.total}`, `conversations → ${nd.label.toLowerCase()}`] });
+        srcOff += nd.total * scale;
       });
-      invites.forEach(({ inviteTime, concrete }) => {
-        if (!inviteTime) return;
-        if (onlyConcrete && !concrete) return;
-        const day = inviteTime.getDay();
-        const hour = inviteTime.getHours();
-        dayHours[day][hour].invites += 1;
-      });
-      // Without match timestamps (some exports omit them) there is no per-cell
-      // denominator, so fall back to each cell's share of all invites.
-      const totalMatches = d3.sum(dayHours.flat(), d => d.matches);
-      const totalInvites = d3.sum(dayHours.flat(), d => d.invites);
-      const normalizedByMatches = totalMatches > 0;
-      let maxProp = 0;
-      for (const row of dayHours) {
-        for (const cell of row) {
-          if (normalizedByMatches) {
-            cell.propensity = cell.matches > 0 ? cell.invites / cell.matches : 0;
-          } else {
-            cell.propensity = totalInvites > 0 ? cell.invites / totalInvites : 0;
-          }
-          if (cell.propensity > maxProp) maxProp = cell.propensity;
+      const metNode = l2[0], noNode = l2[1];
+      let metOff = metNode.y0, noOff = noNode.y0;
+      l1.forEach(nd => {
+        if (nd.met > 0) {
+          links.push({ from: { x: x1 + nodeW, y: nd.y0 }, to: { x: x2, y: metOff }, value: nd.met, toMet: true,
+            desc: [`${nd.met} of ${nd.total}`, `${nd.label.toLowerCase()} → a date (${(nd.met / nd.total * 100).toFixed(1)}%)`] });
+          metOff += nd.met * scale;
         }
-      }
-      return { grid: dayHours.flat(), maxProp, normalizedByMatches };
-    }
-
-    function findHotLane(grid) {
-      if (!grid.length) return '—';
-      const grouped = d3.group(grid, d => d.day);
-      let best = { score: -Infinity, day: 0, start: 0, end: 0 };
-      grouped.forEach((cells, day) => {
-        const ordered = cells.slice().sort((a, b) => a.hour - b.hour);
-        for (let h = 0; h < ordered.length; h += 1) {
-          const window = ordered.slice(h, h + 3);
-          if (!window.length) continue;
-          const score = d3.sum(window, d => d.propensity);
-          if (score > best.score) {
-            best = { score, day, start: window[0].hour, end: window[window.length - 1].hour + 1 };
-          }
+        const rest = nd.total - nd.met;
+        if (rest > 0) {
+          links.push({ from: { x: x1 + nodeW, y: nd.y0 + nd.met * scale }, to: { x: x2, y: noOff }, value: rest, toMet: false,
+            desc: [`${rest} of ${nd.total}`, `${nd.label.toLowerCase()} → no date`] });
+          noOff += rest * scale;
         }
       });
-      if (best.score <= 0) {
-        const topCell = grid.reduce((acc, curr) => (curr.propensity > (acc?.propensity ?? -1) ? curr : acc), null);
-        if (!topCell || !topCell.propensity) return '—';
-        return `${dayLabel(topCell.day)} ${formatHourRange(topCell.hour, topCell.hour + 1)}`;
+
+      function ribbon(l) {
+        const h = Math.max(l.value * scale, 1.5);
+        const cx = (l.from.x + l.to.x) / 2;
+        return `M${l.from.x},${l.from.y}` +
+          `C${cx},${l.from.y} ${cx},${l.to.y} ${l.to.x},${l.to.y}` +
+          `L${l.to.x},${l.to.y + h}` +
+          `C${cx},${l.to.y + h} ${cx},${l.from.y + h} ${l.from.x},${l.from.y + h}Z`;
       }
-      return `${dayLabel(best.day)} ${formatHourRange(best.start, best.end)}`;
+
+      g.selectAll('.link')
+        .data(links.slice().sort((a, b) => a.toMet - b.toMet))
+        .join('path')
+        .attr('class', 'link')
+        .attr('d', ribbon)
+        .attr('fill', d => d.toMet ? accent : deemph)
+        .attr('opacity', d => d.toMet ? 0.85 : 0.45)
+        .on('pointermove', (event, d) => showTooltip([{ value: d.desc[0], label: d.desc[1] }], event))
+        .on('pointerleave', hideTooltip);
+
+      const nodes = [src, ...l1, ...l2];
+      g.selectAll('.node')
+        .data(nodes)
+        .join('rect')
+        .attr('class', 'node')
+        .attr('x', d => d.x)
+        .attr('y', d => d.y0)
+        .attr('width', nodeW)
+        .attr('height', d => Math.max(d.y1 - d.y0, 2))
+        .attr('rx', 2)
+        .attr('fill', d => d.key === 'met' ? accent : inkSec)
+        .on('pointermove', (event, d) => {
+          const rows = [{ value: String(d.total ?? d.value), label: d.label.toLowerCase() }];
+          if (d.met !== undefined) rows.push({ value: `${d.met}`, label: `became dates (${(d.met / d.total * 100).toFixed(1)}%)` });
+          showTooltip(rows, event);
+        })
+        .on('pointerleave', hideTooltip);
+
+      const label = g.append('g')
+        .attr('font-size', 12)
+        .attr('fill', ink)
+        .attr('stroke', cssVar('--surface-1'))
+        .attr('stroke-width', 3.5)
+        .attr('paint-order', 'stroke')
+        .attr('stroke-linejoin', 'round')
+        .attr('pointer-events', 'none');
+
+      label.append('text')
+        .attr('x', src.x - 8).attr('y', (src.y0 + src.y1) / 2)
+        .attr('text-anchor', 'end').attr('dy', '0.32em')
+        .attr('font-weight', 600)
+        .text(`${src.label} · ${src.value}`);
+      label.append('text')
+        .attr('x', src.x - 8).attr('y', (src.y0 + src.y1) / 2 + 16)
+        .attr('text-anchor', 'end').attr('dy', '0.32em')
+        .attr('font-size', 10.5).attr('fill', inkSec)
+        .text('the blue stripe from Act I');
+
+      l1.forEach(nd => {
+        label.append('text')
+          .attr('x', nd.x + nodeW + 8).attr('y', (nd.y0 + nd.y1) / 2)
+          .attr('dy', '0.32em').attr('font-weight', 600)
+          .text(`${nd.label} · ${nd.total}`);
+      });
+      l2.forEach(nd => {
+        label.append('text')
+          .attr('x', nd.x + nodeW + 8).attr('y', Math.max((nd.y0 + nd.y1) / 2, 10))
+          .attr('dy', '0.32em').attr('font-weight', 600)
+          .attr('fill', nd.key === 'met' ? accent : ink)
+          .text(`${nd.label} · ${nd.total}`);
+      });
     }
 
-    function dayLabel(dayIndex) {
-      return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayIndex];
+    function renderAskTimingTiles(data) {
+      const invited = data.filter(d => d.first_invite_msg_index !== null && d.first_invite_msg_index !== undefined);
+      const early = invited.filter(d => d.first_invite_msg_index <= 5);
+      const late = invited.filter(d => d.first_invite_msg_index > 5);
+      const rate = g => g.length ? g.filter(met).length / g.length : 0;
+      const tiles = [
+        { label: 'Ask in the first 5 messages', value: `${(rate(early) * 100).toFixed(1)}%`, sub: `became dates · n = ${early.length}` },
+        { label: 'Ask after message 5', value: `${(rate(late) * 100).toFixed(1)}%`, sub: `became dates · n = ${late.length}` },
+      ];
+      const row = document.getElementById('ask-timing-tiles');
+      row.replaceChildren();
+      tiles.forEach(t => {
+        const tile = document.createElement('div');
+        tile.className = 'stat-tile';
+        const label = document.createElement('p'); label.className = 'label'; label.textContent = t.label;
+        const value = document.createElement('p'); value.className = 'value'; value.textContent = t.value;
+        const sub = document.createElement('p'); sub.className = 'sub'; sub.textContent = t.sub;
+        tile.append(label, value, sub);
+        row.appendChild(tile);
+      });
     }
 
-    function formatHourRange(start, end) {
-      function formatHour(hour) {
-        const suffix = hour >= 12 ? 'pm' : 'am';
-        let hour12 = hour % 12;
-        if (hour12 === 0) hour12 = 12;
-        return `${hour12}${suffix}`;
+    /* ---------------- Act III: survival ---------------- */
+    function computeSurvival(data, maxHours = 168) {
+      const recs = [];
+      for (const d of data) {
+        let span = Number.isFinite(d.duration_hours) ? Math.abs(d.duration_hours) : null;
+        if (span === null) continue;
+        recs.push({ time: Math.min(span, maxHours), raw: span, event: span <= maxHours, met: met(d) });
       }
-      return `${formatHour(start)}–${formatHour(end)}`;
+      const sorted = recs.slice().sort((a, b) => (a.time - b.time) || (b.event - a.event));
+      const agg = [];
+      for (const r of sorted) {
+        const last = agg[agg.length - 1];
+        if (last && Math.abs(last.time - r.time) < 1e-6) {
+          if (r.event) last.deaths += 1; else last.censored += 1;
+        } else {
+          agg.push({ time: r.time, deaths: r.event ? 1 : 0, censored: r.event ? 0 : 1 });
+        }
+      }
+      let atRisk = sorted.length, surv = 1;
+      const curve = [{ time: 0, survival: 1 }];
+      for (const { time, deaths, censored } of agg) {
+        curve.push({ time, survival: surv });
+        if (deaths > 0 && atRisk > 0) surv *= (1 - deaths / atRisk);
+        curve.push({ time, survival: surv });
+        atRisk -= (deaths + censored);
+        if (atRisk <= 0) break;
+      }
+      if (curve[curve.length - 1].time < maxHours) curve.push({ time: maxHours, survival: curve[curve.length - 1].survival });
+
+      const survivalAt = t => {
+        let s = 1;
+        for (const pt of curve) { if (pt.time <= t) s = pt.survival; else break; }
+        return s;
+      };
+      let medianLife = null;
+      for (const pt of curve) { if (pt.survival <= 0.5) { medianLife = pt.time; break; } }
+
+      const surv72 = recs.filter(r => r.raw >= 72);
+      const died72 = recs.filter(r => r.raw < 72);
+      const rate = g => g.length ? g.filter(r => r.met).length / g.length : null;
+      return { curve, survivalAt, medianLife, n: recs.length, rate72: rate(surv72), rateEarly: rate(died72), n72: surv72.length };
     }
 
-    function renderSurvival({ curve, hazard, survivalAt, medianLife, surviveMetRate, dieMetRate }) {
+    function renderSurvival(model) {
       const svg = d3.select('#chart-survival');
       svg.selectAll('*').remove();
-      const width = 740;
-      const height = 420;
-      const margin = { top: 20, right: 16, bottom: 44, left: 52 };
+      const width = 740, height = 360;
+      const margin = { top: 20, right: 20, bottom: 44, left: 48 };
       svg.attr('viewBox', `0 0 ${width} ${height}`);
-
-      const innerWidth = width - margin.left - margin.right;
-      const innerHeight = height - margin.top - margin.bottom;
-
+      const innerW = width - margin.left - margin.right;
+      const innerH = height - margin.top - margin.bottom;
       const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-      const maxTime = 168;
-      const x = d3.scaleLinear().domain([0, maxTime]).range([0, innerWidth]);
-      const y = d3.scaleLinear().domain([0, 1]).range([innerHeight, 0]);
-      const hazardMax = d3.max(hazard, d => d.smooth) || 0.01;
-      const yHazard = d3.scaleLinear().domain([0, hazardMax]).range([innerHeight, innerHeight - innerHeight * 0.4]);
+      const accent = cssVar('--accent');
+      const surface = cssVar('--surface-1');
+      const ink = cssVar('--text-primary');
+      const inkSec = cssVar('--text-secondary');
 
-      g.append('g')
-        .attr('class', 'chart-axis')
-        .attr('transform', `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(x).ticks(8).tickFormat(d => `${d}h`));
+      const maxT = 168;
+      const x = d3.scaleLinear().domain([0, maxT]).range([0, innerW]);
+      const yScale = d3.scaleLinear().domain([0, 1]).range([innerH, 0]);
 
-      g.append('g')
-        .attr('class', 'chart-axis')
-        .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('.0%')));
+      g.append('g').selectAll('line')
+        .data(yScale.ticks(4)).join('line')
+        .attr('class', 'grid-line')
+        .attr('x1', 0).attr('x2', innerW)
+        .attr('y1', d => yScale(d)).attr('y2', d => yScale(d));
 
-      g.append('g')
-        .attr('class', 'grid')
-        .selectAll('line')
-        .data([24, 48, 72, 120, 168])
-        .join('line')
-        .attr('x1', d => x(d))
-        .attr('x2', d => x(d))
-        .attr('y1', 0)
-        .attr('y2', innerHeight)
-        .attr('stroke', '#E0E0E0')
-        .attr('stroke-dasharray', d => (d === 48 ? '4 4' : '2 4'))
-        .attr('stroke-width', d => (d === 48 ? 1.5 : 1));
+      g.append('g').selectAll('.vline')
+        .data([24, 48, 72]).join('line')
+        .attr('class', 'grid-line')
+        .attr('x1', d => x(d)).attr('x2', d => x(d))
+        .attr('y1', 0).attr('y2', innerH);
 
-      const hazardArea = d3.area()
-        .x(d => x(d.hour))
-        .y0(innerHeight)
-        .y1(d => yHazard(d.smooth || 0));
+      const xAxis = g.append('g').attr('class', 'chart-axis')
+        .attr('transform', `translate(0,${innerH})`)
+        .call(d3.axisBottom(x).tickValues([0, 24, 48, 72, 120, 168])
+          .tickFormat(v => v === 0 ? '0' : v === 168 ? '1 week' : `${v}h`)
+          .tickSize(0).tickPadding(10));
+      xAxis.select('.domain').attr('stroke', cssVar('--baseline'));
 
-      g.append('path')
-        .datum(hazard)
-        .attr('class', 'hazard-area')
-        .attr('d', hazardArea)
-        .attr('opacity', 0.8);
+      g.append('g').attr('class', 'chart-axis')
+        .call(d3.axisLeft(yScale).ticks(4).tickFormat(d3.format('.0%')).tickSize(0).tickPadding(8))
+        .call(ax => ax.select('.domain').remove());
 
-      const sampledCurve = d3.range(0, maxTime + 0.5, 0.5).map(t => ({ hour: t, survival: survivalAt(t) }));
-
-      const line = d3.line()
-        .x(d => x(d.hour))
-        .y(d => y(d.survival));
+      const sampled = d3.range(0, maxT + 0.25, 0.25).map(t => ({ t, s: model.survivalAt(t) }));
+      const line = d3.line().x(d => x(d.t)).y(d => yScale(d.s));
 
       g.append('path')
-        .datum(sampledCurve)
-        .attr('class', 'survival-line')
+        .datum(sampled)
+        .attr('fill', 'none')
+        .attr('stroke', accent)
+        .attr('stroke-width', 2)
+        .attr('stroke-linejoin', 'round')
         .attr('d', line);
 
-      g.selectAll('.survival-marker')
-        .data([24, 48, 72].map(hour => ({ hour, survival: survivalAt(hour) })))
+      g.selectAll('.marker')
+        .data([24, 48, 72].map(h => ({ h, s: model.survivalAt(h) })))
         .join('circle')
-        .attr('class', 'survival-marker')
-        .attr('r', 5)
-        .attr('cx', d => x(d.hour))
-        .attr('cy', d => y(d.survival));
+        .attr('cx', d => x(d.h)).attr('cy', d => yScale(d.s))
+        .attr('r', 4.5)
+        .attr('fill', accent)
+        .attr('stroke', surface).attr('stroke-width', 2);
 
-      const focusLine = g.append('line')
-        .attr('stroke', '#C92C2C')
-        .attr('stroke-width', 1.5)
-        .attr('stroke-dasharray', '4 4')
-        .style('opacity', 0);
-
-      svg.on('mousemove', (event) => {
-        const [mx] = d3.pointer(event, g.node());
-        const hour = clamp(x.invert(mx), 0, maxTime);
-        const survivalVal = survivalAt(hour);
-        focusLine
-          .attr('x1', x(hour))
-          .attr('x2', x(hour))
-          .attr('y1', 0)
-          .attr('y2', innerHeight)
-          .style('opacity', 1);
-        showTooltip(`<strong>${hour.toFixed(1)} hours</strong><br />Survival: ${(survivalVal * 100).toFixed(1)}%`, event);
-      }).on('mouseleave', () => {
-        focusLine.style('opacity', 0);
-        hideTooltip();
+      // selective direct labels on the markers (the story points)
+      const mlabels = g.append('g')
+        .attr('font-size', 11).attr('font-weight', 600).attr('fill', ink)
+        .attr('stroke', surface).attr('stroke-width', 3).attr('paint-order', 'stroke')
+        .attr('pointer-events', 'none');
+      [24, 48, 72].forEach(h => {
+        const s = model.survivalAt(h);
+        mlabels.append('text')
+          .attr('x', x(h) + 8).attr('y', yScale(s) - 8)
+          .text(`${(s * 100).toFixed(0)}% at ${h}h`);
       });
 
-      updateSurvivalStats({ survivalAt, medianLife, surviveMetRate, dieMetRate });
+      // crosshair + tooltip
+      const cross = g.append('line')
+        .attr('stroke', ink).attr('stroke-width', 1)
+        .attr('stroke-dasharray', '2 3')
+        .style('opacity', 0).style('pointer-events', 'none');
+      svg.on('pointermove', (event) => {
+        const [mx, my] = d3.pointer(event, g.node());
+        if (mx < 0 || mx > innerW || my < -10 || my > innerH + 10) { cross.style('opacity', 0); hideTooltip(); return; }
+        const h = Math.max(0, Math.min(maxT, x.invert(mx)));
+        const s = model.survivalAt(h);
+        cross.attr('x1', x(h)).attr('x2', x(h)).attr('y1', 0).attr('y2', innerH).style('opacity', 0.6);
+        showTooltip([
+          { value: `${(s * 100).toFixed(1)}%`, label: 'of conversations still alive' },
+          { value: h < 48 ? `${h.toFixed(0)} hours in` : `${(h / 24).toFixed(1)} days in`, label: '' },
+        ], event);
+      }).on('pointerleave', () => { cross.style('opacity', 0); hideTooltip(); });
+
+      // stat callouts in prose
+      document.getElementById('stat-median-life').textContent = model.medianLife !== null ? model.medianLife.toFixed(1) : '—';
+      document.getElementById('stat-surv-24').textContent = (model.survivalAt(24) * 100).toFixed(0);
+      document.getElementById('stat-surv-48').textContent = (model.survivalAt(48) * 100).toFixed(0);
+      const lift = (model.rate72 !== null && model.rateEarly > 0) ? (model.rate72 / model.rateEarly) : null;
+      document.getElementById('stat-lift-72').textContent = lift ? lift.toFixed(1) : '—';
+
+      buildTable('table-survival',
+        ['Hours since first message', 'Still alive'],
+        [1, 6, 12, 24, 48, 72, 120, 168].map(h => [h, `${(model.survivalAt(h) * 100).toFixed(1)}%`]));
     }
 
-    function updateSurvivalStats({ survivalAt, medianLife, surviveMetRate, dieMetRate }) {
-      const median = document.getElementById('stat-median-life');
-      const surv24 = document.getElementById('stat-surv-24');
-      const surv48 = document.getElementById('stat-surv-48');
-      const lift = document.getElementById('stat-lift-survive72');
-
-      median.textContent = medianLife ? Math.round(medianLife) : '—';
-      surv24.textContent = formatPercent(survivalAt(24), 0);
-      surv48.textContent = formatPercent(survivalAt(48), 0);
-
-      const surviveRate = surviveMetRate?.rate;
-      const dieRate = dieMetRate?.rate;
-      const ratio = (surviveRate !== null && dieRate !== null && dieRate > 0) ? surviveRate / dieRate : null;
-      lift.textContent = ratio ? ratio.toFixed(1) : '—';
-    }
-
-    function renderInviteChart(inviteData) {
-      const svg = d3.select('#chart-invite');
-      svg.selectAll('*').remove();
-      const width = 740;
-      const height = 420;
-      const margin = { top: 24, right: 16, bottom: 72, left: 60 };
-      svg.attr('viewBox', `0 0 ${width} ${height}`);
-
-      const innerWidth = width - margin.left - margin.right;
-      const innerHeight = height - margin.top - margin.bottom;
-
-      const labelById = new Map(INVITE_BINS.map(bin => [bin.id, bin.label]));
-      const binOrder = INVITE_BINS.map(bin => bin.id);
-
-      const filtered = (state.concreteOnly ? inviteData.filter(d => d.concrete) : inviteData)
-        .filter(d => binOrder.includes(d.id));
-
-      const x = d3.scaleBand().domain(binOrder).range([0, innerWidth]).padding(0.3);
-      const groups = d3.scaleBand().domain(state.concreteOnly ? ['concrete'] : ['concrete', 'non']).range([0, x.bandwidth()]).padding(0.15);
-
-      const yMax = d3.max(filtered, d => d.rate || 0) || 0.05;
-      const y = d3.scaleLinear().domain([0, Math.max(0.1, yMax * 1.2)]).range([innerHeight, 0]);
-
-      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
-
-      g.append('g')
-        .attr('class', 'chart-axis')
-        .attr('transform', `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(x).tickFormat(id => labelById.get(id) || id))
-        .selectAll('text')
-        .attr('transform', 'rotate(-20)')
-        .style('text-anchor', 'end');
-
-      g.append('g')
-        .attr('class', 'chart-axis')
-        .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('.0%')));
-
-      const drawable = filtered.filter(d => x(d.id) !== undefined);
-
-      const barGroups = g.selectAll('.bar-group')
-        .data(drawable)
-        .join('g')
-        .attr('class', 'bar-group')
-        .attr('transform', d => {
-          const base = x(d.id) ?? 0;
-          const offset = state.concreteOnly ? 0 : (d.concrete ? groups('concrete') : groups('non'));
-          return `translate(${base + (offset ?? 0)},0)`;
-        });
-
-      barGroups.append('rect')
-        .attr('x', 0)
-        .attr('y', d => d.rate !== null ? y(d.rate) : innerHeight)
-        .attr('width', state.concreteOnly ? x.bandwidth() : groups.bandwidth())
-        .attr('height', d => d.rate !== null ? innerHeight - y(d.rate) : 0)
-        .attr('class', d => d.concrete ? 'bar-concrete' : 'bar-nonconcrete')
-        .attr('opacity', d => (d.rate !== null ? 1 : 0.2))
-        .on('mousemove', (event, d) => {
-          if (d.rate === null) return;
-          const ci = d.ci ? `${(d.ci.lower * 100).toFixed(1)}%–${(d.ci.upper * 100).toFixed(1)}%` : '—';
-          showTooltip(`<strong>${d.label}</strong><br />${d.concrete ? 'Concrete invite' : 'Loose invite'}<br />Meet: ${(d.rate * 100).toFixed(1)}%<br />95% CI: ${ci}<br />n = ${d.count}`, event);
-        })
-        .on('mouseleave', hideTooltip);
-
-      barGroups.filter(d => d.rate !== null && d.ci)
-        .append('line')
-        .attr('class', 'error-line')
-        .attr('x1', (state.concreteOnly ? x.bandwidth() : groups.bandwidth()) / 2)
-        .attr('x2', (state.concreteOnly ? x.bandwidth() : groups.bandwidth()) / 2)
-        .attr('y1', d => y(d.ci.lower))
-        .attr('y2', d => y(d.ci.upper));
-
-      if (!state.concreteOnly) {
-        const legend = g.append('g').attr('transform', `translate(${innerWidth - 140},-10)`);
-        const entries = [
-          { label: 'Concrete', class: 'bar-concrete' },
-          { label: 'Non-concrete', class: 'bar-nonconcrete' },
-        ];
-        legend.selectAll('rect')
-          .data(entries)
-          .join('rect')
-          .attr('x', 0)
-          .attr('y', (d, i) => i * 20)
-          .attr('width', 12)
-          .attr('height', 12)
-          .attr('class', d => d.class);
-        legend.selectAll('text')
-          .data(entries)
-          .join('text')
-          .attr('x', 18)
-          .attr('y', (d, i) => i * 20 + 10)
-          .text(d => d.label)
-          .attr('font-size', 12)
-          .attr('font-family', 'Libre Franklin, sans-serif');
-      }
-    }
-
-    function renderQuadrants(data) {
-      const svg = d3.select('#chart-curiosity');
-      svg.selectAll('*').remove();
-      const width = 740;
-      const height = 360;
-      const margin = { top: 32, right: 16, bottom: 40, left: 48 };
-      svg.attr('viewBox', `0 0 ${width} ${height}`);
-
-      const innerWidth = width - margin.left - margin.right;
-      const innerHeight = height - margin.top - margin.bottom;
-
-      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
-      const cols = ['short', 'long'];
-      const rows = ['high', 'low'];
-
-      const x = d3.scaleBand().domain(cols).range([0, innerWidth]).padding(0.1);
-      const y = d3.scaleBand().domain(rows).range([0, innerHeight]).padding(0.1);
-
-      const rateValues = data.map(d => d.rate || 0);
-      const color = d3.scaleSequential(d3.interpolateRgbBasis(['#eef5f6', '#2A7F8E']))
-        .domain([0, d3.max(rateValues) || 0.1]);
-
-      const quadrantGroup = g.selectAll('.quadrant')
-        .data(data)
-        .join('g')
-        .attr('class', 'quadrant')
-        .attr('transform', d => `translate(${x(d.length)},${y(d.question)})`);
-
-      quadrantGroup.append('rect')
-        .attr('width', x.bandwidth())
-        .attr('height', y.bandwidth())
-        .attr('fill', d => (d.rate !== null ? color(d.rate) : '#f5f5f3'))
-        .attr('class', 'heat-rect')
-        .on('mousemove', (event, d) => {
-          if (d.rate === null) return;
-          showTooltip(`<strong>${d.label}</strong><br />Meet: ${(d.rate * 100).toFixed(1)}%<br />n = ${d.count}`, event);
-        })
-        .on('mouseleave', hideTooltip);
-
-      quadrantGroup.append('text')
-        .attr('x', x.bandwidth() / 2)
-        .attr('y', y.bandwidth() / 2 - 6)
-        .attr('text-anchor', 'middle')
-        .attr('font-family', 'Libre Franklin, sans-serif')
-        .attr('font-weight', 700)
-        .attr('font-size', 16)
-        .attr('fill', d => (d.rate && d.rate > 0.12 ? '#fff' : '#111'))
-        .text(d => d.label);
-
-      quadrantGroup.append('text')
-        .attr('x', x.bandwidth() / 2)
-        .attr('y', y.bandwidth() / 2 + 18)
-        .attr('text-anchor', 'middle')
-        .attr('font-size', 12)
-        .text(d => (d.rate !== null ? `${(d.rate * 100).toFixed(0)}%` : '—'));
-
-      g.append('text')
-        .attr('x', innerWidth / 2)
-        .attr('y', innerHeight + 30)
-        .attr('text-anchor', 'middle')
-        .attr('font-size', 12)
-        .text('Message length (first 10 messages)');
-
-      g.append('text')
-        .attr('x', -innerHeight / 2)
-        .attr('y', -28)
-        .attr('transform', 'rotate(-90)')
-        .attr('text-anchor', 'middle')
-        .attr('font-size', 12)
-        .text('Question density');
-    }
-
-    function renderDelayChart(data) {
-      const svg = d3.select('#chart-delay');
-      svg.selectAll('*').remove();
-      const width = 740;
-      const height = 420;
-      const margin = { top: 24, right: 16, bottom: 72, left: 60 };
-      svg.attr('viewBox', `0 0 ${width} ${height}`);
-
-      if (!data.some(d => d.count > 0)) {
-        svg.attr('viewBox', `0 0 ${width} 80`);
-        svg.append('text')
-          .attr('x', width / 2)
-          .attr('y', 44)
-          .attr('text-anchor', 'middle')
-          .attr('font-size', 14)
-          .attr('fill', '#555')
-          .text('No reply-timing data in this export (match timestamps unavailable).');
-        return;
-      }
-
-      const innerWidth = width - margin.left - margin.right;
-      const innerHeight = height - margin.top - margin.bottom;
-
-      const x = d3.scaleBand().domain(data.map(d => d.id)).range([0, innerWidth]).padding(0.25);
-      const yMax = d3.max(data, d => d.rate || 0) || 0.05;
-      const y = d3.scaleLinear().domain([0, Math.max(0.15, yMax * 1.2)]).range([innerHeight, 0]);
-
-      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
-
-      g.append('g')
-        .attr('class', 'chart-axis')
-        .attr('transform', `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(x).tickFormat(id => data.find(d => d.id === id)?.label || id))
-        .selectAll('text')
-        .attr('transform', 'rotate(-20)')
-        .style('text-anchor', 'end');
-
-      g.append('g')
-        .attr('class', 'chart-axis')
-        .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('.0%')));
-
-      g.append('g')
-        .attr('class', 'grid-line')
-        .selectAll('line')
-        .data(y.ticks(4))
-        .join('line')
-        .attr('x1', 0)
-        .attr('x2', innerWidth)
-        .attr('y1', d => y(d))
-        .attr('y2', d => y(d))
-        .attr('stroke', '#E0E0E0');
-
-      g.selectAll('rect')
-        .data(data)
-        .join('rect')
-        .attr('x', d => x(d.id))
-        .attr('y', d => d.rate !== null ? y(d.rate) : innerHeight)
-        .attr('width', x.bandwidth())
-        .attr('height', d => d.rate !== null ? innerHeight - y(d.rate) : 0)
-        .attr('fill', '#2A7F8E')
-        .attr('opacity', 0.6)
-        .on('mousemove', (event, d) => {
-          if (d.rate === null) return;
-          const ci = d.ci ? `${(d.ci.lower * 100).toFixed(1)}%–${(d.ci.upper * 100).toFixed(1)}%` : '—';
-          showTooltip(`<strong>${d.label}</strong><br />Meet: ${(d.rate * 100).toFixed(1)}%<br />95% CI: ${ci}<br />n = ${d.count}`, event);
-        })
-        .on('mouseleave', hideTooltip);
-
-      g.selectAll('.delay-error')
-        .data(data.filter(d => d.ci))
-        .join('line')
-        .attr('class', 'error-line delay-error')
-        .attr('x1', d => x(d.id) + x.bandwidth() / 2)
-        .attr('x2', d => x(d.id) + x.bandwidth() / 2)
-        .attr('y1', d => y(d.ci.lower))
-        .attr('y2', d => y(d.ci.upper));
-    }
-
-    function renderHeatmap(gridData, note) {
-      const svg = d3.select('#chart-heatmap');
-      svg.selectAll('*').remove();
-      const width = 740;
-      const height = 480;
-      const margin = { top: 40, right: 16, bottom: 60, left: 90 };
-      svg.attr('viewBox', `0 0 ${width} ${height}`);
-
-      const innerWidth = width - margin.left - margin.right;
-      const innerHeight = height - margin.top - margin.bottom;
-
-      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
-
-      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      const x = d3.scaleBand().domain(d3.range(24)).range([0, innerWidth]);
-      const y = d3.scaleBand().domain(d3.range(7)).range([0, innerHeight]).paddingInner(0.05);
-
-      const color = d3.scaleSequential(d3.interpolateRgbBasis(['#f0f6f7', '#2A7F8E']))
-        .domain([0, gridData.maxProp || 0.01]);
-
-      g.selectAll('rect')
-        .data(gridData.grid)
-        .join('rect')
-        .attr('class', 'heat-rect')
-        .attr('x', d => x(d.hour))
-        .attr('y', d => y(d.day))
-        .attr('width', x.bandwidth())
-        .attr('height', y.bandwidth())
-        .attr('fill', d => color(d.propensity || 0))
-        .on('mousemove', (event, d) => {
-          const denomLine = gridData.normalizedByMatches
-            ? `Invites: ${d.invites}<br />Matches: ${d.matches}`
-            : `Invites: ${d.invites}`;
-          showTooltip(`${dayLabel(d.day)} ${formatHourRange(d.hour, d.hour + 1)}<br />${gridData.normalizedByMatches ? 'Invite propensity' : 'Share of invites'}: ${(d.propensity * 100).toFixed(2)}%<br />${denomLine}`, event);
-        })
-        .on('mouseleave', hideTooltip);
-
-      g.append('g')
-        .attr('class', 'chart-axis')
-        .attr('transform', `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(x).tickValues([0, 6, 12, 18, 23]).tickFormat(h => formatHourRange(h, h + 1)));
-
-      g.append('g')
-        .attr('class', 'chart-axis')
-        .call(d3.axisLeft(y).tickFormat(day => days[day]));
-
-      const gradientLabel = svg.append('g').attr('transform', `translate(${width - 160},${margin.top})`);
-      const gradient = gradientLabel.append('defs').append('linearGradient')
-        .attr('id', 'heatmap-gradient')
-        .attr('x1', '0%').attr('x2', '0%').attr('y1', '0%').attr('y2', '100%');
-      gradient.append('stop').attr('offset', '0%').attr('stop-color', '#2A7F8E');
-      gradient.append('stop').attr('offset', '100%').attr('stop-color', '#f0f6f7');
-
-      gradientLabel.append('rect')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', 14)
-        .attr('height', 120)
-        .attr('fill', 'url(#heatmap-gradient)');
-
-      gradientLabel.append('text')
-        .attr('x', 24)
-        .attr('y', 12)
-        .attr('font-size', 12)
-        .text(gridData.normalizedByMatches ? 'Higher invite propensity' : 'More invites');
-
-      gradientLabel.append('text')
-        .attr('x', 24)
-        .attr('y', 120)
-        .attr('font-size', 12)
-        .text('Lower');
-
-      if (note) {
-        svg.append('text')
-          .attr('x', margin.left)
-          .attr('y', height - 16)
-          .attr('font-size', 12)
-          .attr('fill', '#555')
-          .text(note);
-      }
-    }
-
-    function fillInviteStats(inviteData) {
-      const concreteOnly = inviteData.filter(d => d.concrete && d.rate !== null);
-      let best = concreteOnly.reduce((acc, curr) => (curr.rate > (acc?.rate ?? -1) ? curr : acc), null);
-      if (!best) {
-        const fallback = inviteData.find(d => d.rate !== null);
-        best = fallback || { label: '—' };
-      }
-      document.getElementById('stat-best-invite-bin').textContent = best.label || '—';
-    }
-
-    function fillQuadrantStats(quadrants) {
-      const shortCurious = quadrants.find(q => q.id === 'short-curious');
-      const longSilent = quadrants.find(q => q.id === 'long-silent');
-      document.getElementById('stat-short-curious-rate').textContent = shortCurious && shortCurious.rate !== null ? (shortCurious.rate * 100).toFixed(0) : '—';
-      document.getElementById('stat-long-silent-rate').textContent = longSilent && longSilent.rate !== null ? (longSilent.rate * 100).toFixed(0) : '—';
-    }
-
-    function fillDelayStats(delays) {
-      const valid = delays.filter(d => d.rate !== null);
-      const peak = valid.reduce((acc, curr) => (curr.rate > (acc?.rate ?? -1) ? curr : acc), null);
-      const chart = document.getElementById('chart-delay');
-      if (peak) {
-        document.getElementById('stat-sweet-spot').textContent = peak.label;
-        document.getElementById('stat-peak-delay-rate').textContent = (peak.rate * 100).toFixed(0);
-        if (chart) {
-          const peakIndex = valid.findIndex(d => d.id === peak.id);
-          const isInterior = peakIndex > 0 && peakIndex < valid.length - 1;
-          const leftLower = valid.slice(0, peakIndex).every(d => d.rate < peak.rate);
-          const rightLower = valid.slice(peakIndex + 1).every(d => d.rate < peak.rate);
-          chart.dataset.shape = isInterior && leftLower && rightLower ? 'u-shaped' : 'other';
-        }
-      } else {
-        document.getElementById('stat-sweet-spot').textContent = '—';
-        document.getElementById('stat-peak-delay-rate').textContent = '—';
-        if (chart) {
-          chart.dataset.shape = 'insufficient-data';
-        }
-      }
-    }
-
-    function updateHotLaneText(grid) {
-      const label = findHotLane(grid.grid);
-      document.getElementById('stat-hotlane').textContent = label;
-    }
-
-    function handleToggleMethods() {
-      const button = document.getElementById('toggle-methods');
-      const body = document.getElementById('methods-body');
-      button.addEventListener('click', () => {
-        const expanded = button.getAttribute('aria-expanded') === 'true';
-        button.setAttribute('aria-expanded', String(!expanded));
-        body.hidden = expanded;
-      });
-    }
-
-    function setupObserver() {
-      const steps = document.querySelectorAll('article.step');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-active');
-          }
-        });
-      }, { threshold: 0.55 });
-      steps.forEach(step => observer.observe(step));
-    }
-
-    function updateToggleIndicator() {
-      if (!toggleIndicator) return;
-      toggleIndicator.textContent = state.concreteOnly ? 'Concrete invites only' : 'All invites';
-    }
-
-    function setupKeyboard(inviteData, heatmapDatasets) {
-      document.addEventListener('keydown', (event) => {
-        if (event.key.toLowerCase() === 'c') {
-          state.concreteOnly = !state.concreteOnly;
-          updateToggleIndicator();
-          renderInviteChart(inviteData);
-          const heatmapData = state.concreteOnly ? heatmapDatasets.concrete : heatmapDatasets.all;
-          const note = state.concreteOnly ? `Concrete invites (${state.inviteTimingMethod})` : `All invites (${state.inviteTimingMethod})`;
-          renderHeatmap(heatmapData, note);
-          updateHotLaneText(heatmapData);
-        }
-      });
-    }
-
-    function hydrateStory(data) {
-      const survival = computeSurvival(data);
-      renderSurvival(survival);
-
-      const inviteData = binFirstInvite(data);
-      renderInviteChart(inviteData);
-      fillInviteStats(inviteData);
-
-      const quadrants = quadrantSummary(data);
-      renderQuadrants(quadrants);
-      fillQuadrantStats(quadrants);
-
-      const delays = delaySummary(data);
-      renderDelayChart(delays);
-      fillDelayStats(delays);
-
-      const matches = data.map(d => parseDate(d.match_time)).filter(Boolean);
-      const invites = computeInviteTiming(data);
-      const heatmapConcrete = computeHeatmap(invites, matches, true);
-      const heatmapAll = computeHeatmap(invites, matches, false);
-      updateHotLaneText(heatmapConcrete);
-      const note = `Concrete invites (${state.inviteTimingMethod})`;
-      renderHeatmap(heatmapConcrete, note);
-
-      setupKeyboard(inviteData, { concrete: heatmapConcrete, all: heatmapAll });
-    }
-
-    function renderTimeline(data) {
-      const svg = d3.select('#timeline-chart');
-      svg.selectAll('*').remove();
-
-      const width = 696;
-      const height = 120;
-      const margin = { top: 10, right: 0, bottom: 30, left: 40 };
-
-      svg.attr('viewBox', `0 0 ${width} ${height}`);
-
-      const innerWidth = width - margin.left - margin.right;
-      const innerHeight = height - margin.top - margin.bottom;
-
-      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
-
-      // The source data skips months with no activity; fill the gaps so the
-      // last-12-months window is a contiguous calendar range.
-      const countsByMonth = new Map(data.by_month.map(d => [d.month, d.count]));
-      const months = data.by_month.map(d => d.month).sort();
-      const filled = [];
-      if (months.length) {
-        let [year, month] = months[0].split('-').map(Number);
-        const last = months[months.length - 1];
-        let key = months[0];
-        while (key <= last) {
-          filled.push({ month: key, count: countsByMonth.get(key) || 0 });
-          month += 1;
-          if (month > 12) { month = 1; year += 1; }
-          key = `${year}-${String(month).padStart(2, '0')}`;
-        }
-      }
-      const monthlyData = filled.slice(-12); // Last 12 months
-
-      const x = d3.scaleBand()
-        .domain(monthlyData.map(d => d.month))
-        .range([0, innerWidth])
-        .padding(0.2);
-
-      const y = d3.scaleLinear()
-        .domain([0, d3.max(monthlyData, d => d.count) || 100])
-        .range([innerHeight, 0]);
-
-      g.selectAll('rect')
-        .data(monthlyData)
-        .join('rect')
-        .attr('x', d => x(d.month))
-        .attr('y', d => y(d.count))
-        .attr('width', x.bandwidth())
-        .attr('height', d => innerHeight - y(d.count))
-        .attr('fill', 'rgba(255, 255, 255, 0.6)')
-        .attr('rx', 2);
-
-      g.append('g')
-        .attr('transform', `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(x).tickFormat(d => {
-          const [year, month] = d.split('-');
-          return `${month}/${year.slice(2)}`;
-        }))
-        .selectAll('text')
-        .attr('fill', '#fff')
-        .style('font-size', '0.7rem');
-
-      g.append('g')
-        .call(d3.axisLeft(y).ticks(3))
-        .selectAll('text')
-        .attr('fill', '#fff')
-        .style('font-size', '0.7rem');
-
-      g.selectAll('.domain, .tick line')
-        .attr('stroke', 'rgba(255, 255, 255, 0.3)');
-    }
-
-    function renderFunnel(funnel) {
-      const container = document.getElementById('funnel-stages');
-      container.innerHTML = '';
-
-      const stages = [
-        { label: '🎯 Total Matches', value: funnel.total_matches, percent: 100, detail: '' },
-        { label: '💬 Got a Response', value: funnel.matches_with_chats, percent: funnel.chat_rate, detail: `${(100 - funnel.chat_rate).toFixed(1)}% ghosted` },
-        { label: '🤝 Met in Person', value: funnel.met_yes, percent: funnel.meet_rate_of_chats, detail: `${funnel.avg_messages_per_chat} avg msgs per chat` },
-        { label: '❤️ Were Your Type', value: funnel.met_yes, percent: 100, detail: 'Perfect filtering!' }
+    /* ---------------- Act IV: depth ladder ---------------- */
+    function depthModel(data) {
+      const buckets = [
+        { id: '1-5', label: '1–5 msgs', min: 1, max: 5 },
+        { id: '6-15', label: '6–15', min: 6, max: 15 },
+        { id: '16-40', label: '16–40', min: 16, max: 40 },
+        { id: '41+', label: '41+', min: 41, max: Infinity },
       ];
-
-      stages.forEach((stage, idx) => {
-        const stageDiv = document.createElement('div');
-        stageDiv.className = 'funnel-stage';
-
-        const label = document.createElement('div');
-        label.className = 'funnel-label';
-        label.textContent = stage.label;
-
-        const barBg = document.createElement('div');
-        barBg.className = 'funnel-bar-bg';
-
-        const barFill = document.createElement('div');
-        barFill.className = 'funnel-bar-fill';
-        barFill.style.width = '0%';
-        setTimeout(() => {
-          barFill.style.width = `${stage.percent}%`;
-        }, idx * 150);
-
-        barBg.appendChild(barFill);
-
-        const stats = document.createElement('div');
-        stats.className = 'funnel-stats';
-        stats.textContent = `${stage.value.toLocaleString()} (${stage.percent.toFixed(1)}%)`;
-        if (stage.detail) {
-          stats.textContent += ` • ${stage.detail}`;
-        }
-
-        stageDiv.appendChild(label);
-        stageDiv.appendChild(barBg);
-        stageDiv.appendChild(stats);
-
-        container.appendChild(stageDiv);
+      return buckets.map(b => {
+        const grp = data.filter(d => d.num_messages >= b.min && d.num_messages <= b.max);
+        const successes = grp.filter(met).length;
+        return { ...b, n: grp.length, successes, rate: grp.length ? successes / grp.length : null, ci: wilson(successes, grp.length) };
       });
     }
 
-    function loadPersonalStats() {
-      // Load funnel data
-      fetch('./data/funnel_stats.json')
-        .then(response => response.json())
-        .then(funnel => {
-          document.getElementById('personal-matches').textContent = funnel.total_matches.toLocaleString();
-          document.getElementById('personal-chats').textContent = funnel.matches_with_chats;
-          document.getElementById('personal-met').textContent = funnel.met_yes;
-          document.getElementById('personal-conversion').textContent = `${funnel.overall_meet_rate}%`;
+    function renderDepth(model) {
+      const svg = d3.select('#chart-depth');
+      svg.selectAll('*').remove();
+      const width = 740, height = 330;
+      const margin = { top: 28, right: 16, bottom: 52, left: 48 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+      const innerW = width - margin.left - margin.right;
+      const innerH = height - margin.top - margin.bottom;
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-          renderFunnel(funnel);
+      const colors = ramp();
+      const ink = cssVar('--text-primary');
+      const inkSec = cssVar('--text-secondary');
 
-          // Generate insight based on funnel
-          let insight = `The harsh reality: ${funnel.chat_rate}% response rate means ${(100 - funnel.chat_rate).toFixed(1)}% of matches never chat. `;
-          insight += `But when they DO respond, you convert ${funnel.meet_rate_of_chats}% to meetings. `;
-          insight += `Overall: ${funnel.overall_meet_rate}% of all matches become dates. `;
+      const x = d3.scaleBand().domain(model.map(d => d.id)).range([0, innerW]).paddingInner(0.5).paddingOuter(0.25);
+      const yMax = Math.max(0.35, d3.max(model, d => d.ci ? d.ci.upper : d.rate) * 1.08);
+      const yScale = d3.scaleLinear().domain([0, yMax]).range([innerH, 0]);
+      const barW = Math.min(x.bandwidth(), 24);
+      const bx = d => x(d.id) + (x.bandwidth() - barW) / 2;
 
-          if (funnel.avg_messages_per_chat > 20) {
-            insight += `Your conversations average ${funnel.avg_messages_per_chat} messages—you build real connections!`;
-          }
+      g.append('g').selectAll('line').data(yScale.ticks(4)).join('line')
+        .attr('class', 'grid-line')
+        .attr('x1', 0).attr('x2', innerW)
+        .attr('y1', d => yScale(d)).attr('y2', d => yScale(d));
 
-          document.getElementById('personal-insight').textContent = insight;
-        })
-        .catch(err => {
-          console.error('Failed to load funnel stats', err);
-        });
+      g.append('g').attr('class', 'chart-axis')
+        .call(d3.axisLeft(yScale).ticks(4).tickFormat(d3.format('.0%')).tickSize(0).tickPadding(8))
+        .call(ax => ax.select('.domain').remove());
 
-      fetch('./data/timeline_stats.json')
-        .then(response => response.json())
-        .then(timeline => {
-          renderTimeline(timeline);
+      g.selectAll('.bar').data(model).join('path')
+        .attr('class', 'bar')
+        .attr('d', d => barPath(bx(d), yScale(d.rate), barW, innerH))
+        .attr('fill', (d, i) => colors[i])
+        .on('pointermove', (event, d) => showTooltip([
+          { value: `${(d.rate * 100).toFixed(1)}%`, label: `meeting rate · ${d.label}` },
+          { value: `${d.successes} of ${d.n}`, label: 'became dates' },
+          { value: `${(d.ci.lower * 100).toFixed(1)}–${(d.ci.upper * 100).toFixed(1)}%`, label: '95% CI' },
+        ], event))
+        .on('pointerleave', hideTooltip);
 
-          const earliest = new Date(timeline.earliest);
-          const latest = new Date(timeline.latest);
-          const monthsDiff = Math.round(timeline.duration_days / 30);
+      g.selectAll('.ci').data(model).join('line')
+        .attr('x1', d => bx(d) + barW / 2).attr('x2', d => bx(d) + barW / 2)
+        .attr('y1', d => yScale(d.ci.lower)).attr('y2', d => yScale(d.ci.upper))
+        .attr('stroke', ink).attr('stroke-width', 1.5).attr('opacity', 0.7)
+        .attr('pointer-events', 'none');
 
-          document.getElementById('timeline-summary').textContent =
-            `${timeline.total_messages} messages over ${monthsDiff} months (${earliest.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} - ${latest.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })})`;
-        })
-        .catch(err => {
-          console.error('Failed to load timeline', err);
-          document.getElementById('timeline-summary').textContent = 'Run analyze_timeline.py to generate timeline data!';
-        });
+      const top = model[model.length - 1];
+      g.append('text')
+        .attr('x', bx(top) + barW / 2)
+        .attr('y', yScale(top.ci.upper) - 8)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 13).attr('font-weight', 600).attr('fill', ink)
+        .attr('pointer-events', 'none')
+        .text(`${(top.rate * 100).toFixed(0)}%`);
+
+      const xAxis = g.append('g').attr('class', 'chart-axis')
+        .attr('transform', `translate(0,${innerH})`)
+        .call(d3.axisBottom(x).tickFormat(id => model.find(d => d.id === id).label).tickSize(0).tickPadding(10));
+      xAxis.select('.domain').attr('stroke', cssVar('--baseline'));
+
+      g.selectAll('.n-label').data(model).join('text')
+        .attr('x', d => x(d.id) + x.bandwidth() / 2)
+        .attr('y', innerH + 40)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 10.5).attr('fill', inkSec)
+        .text(d => `n = ${d.n}`);
     }
 
-    function loadData() {
-      fetch('./data/conversations_features.json')
-        .then(response => response.json())
-        .then(json => {
-          state.data = json;
-          hydrateStory(json);
-        })
-        .catch(err => {
-          console.error('Failed to load data', err);
-        });
+    /* ---------------- Act V: myth dumbbells ---------------- */
+    function mythModel(data) {
+      const dates = data.filter(met);
+      const rest = data.filter(d => !met(d));
+      const median = arr => { const s = arr.filter(v => v !== null && v !== undefined).sort((a, b) => a - b); return s.length ? (s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2) : null; };
+      return [
+        {
+          id: 'questions', label: 'Questions per 10 opening messages', max: 4,
+          dates: median(dates.map(d => d.question_density_first10)) * 10,
+          rest: median(rest.map(d => d.question_density_first10)) * 10,
+          fmt: v => v.toFixed(1),
+        },
+        {
+          id: 'length', label: 'Median message length (characters)', max: 80,
+          dates: median(dates.map(d => d.median_len_first10)),
+          rest: median(rest.map(d => d.median_len_first10)),
+          fmt: v => v.toFixed(0),
+        },
+      ];
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      handleToggleMethods();
-      setupObserver();
-      updateToggleIndicator();
-      loadPersonalStats();
-      loadData();
-    });
+    function renderMyth(model) {
+      const svg = d3.select('#chart-myth');
+      svg.selectAll('*').remove();
+      const width = 740, height = 200;
+      const margin = { top: 16, right: 60, bottom: 16, left: 24 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+      const innerW = width - margin.left - margin.right;
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const accent = cssVar('--accent');
+      const deemph = cssVar('--deemph');
+      const surface = cssVar('--surface-1');
+      const ink = cssVar('--text-primary');
+      const inkSec = cssVar('--text-secondary');
+
+      const rowH = 84;
+      model.forEach((row, i) => {
+        const ry = i * rowH + 30;
+        const x = d3.scaleLinear().domain([0, row.max]).range([0, innerW]);
+
+        g.append('text')
+          .attr('x', 0).attr('y', ry - 16)
+          .attr('font-size', 12).attr('font-weight', 600).attr('fill', ink)
+          .text(row.label);
+
+        g.append('line')
+          .attr('class', 'grid-line')
+          .attr('x1', 0).attr('x2', innerW)
+          .attr('y1', ry).attr('y2', ry);
+
+        // connector between the two dots
+        g.append('line')
+          .attr('x1', x(row.rest)).attr('x2', x(row.dates))
+          .attr('y1', ry).attr('y2', ry)
+          .attr('stroke', ink).attr('stroke-width', 1.5).attr('opacity', 0.5);
+
+        const dots = [
+          { v: row.rest, color: deemph, name: 'everything else' },
+          { v: row.dates, color: accent, name: 'date conversations' },
+        ];
+        g.selectAll(`.dot-${row.id}`).data(dots).join('circle')
+          .attr('cx', d => x(d.v)).attr('cy', ry)
+          .attr('r', 6)
+          .attr('fill', d => d.color)
+          .attr('stroke', surface).attr('stroke-width', 2)
+          .on('pointermove', (event, d) => showTooltip([
+            { value: row.fmt(d.v), label: `${row.label.toLowerCase()} — ${d.name}` },
+          ], event))
+          .on('pointerleave', hideTooltip);
+
+        // direct value labels beside each dot
+        const lbl = g.append('g')
+          .attr('font-size', 11).attr('fill', inkSec)
+          .attr('stroke', surface).attr('stroke-width', 3).attr('paint-order', 'stroke')
+          .attr('pointer-events', 'none');
+        const flip = row.dates < row.rest;
+        lbl.append('text')
+          .attr('x', x(row.dates) + (flip ? -10 : 10)).attr('y', ry + 4)
+          .attr('text-anchor', flip ? 'end' : 'start')
+          .attr('font-weight', 600).attr('fill', ink)
+          .text(row.fmt(row.dates));
+        lbl.append('text')
+          .attr('x', x(row.rest) + (flip ? 10 : -10)).attr('y', ry + 4)
+          .attr('text-anchor', flip ? 'start' : 'end')
+          .text(row.fmt(row.rest));
+      });
+    }
+
+    /* ---------------- Act VI: scatter ---------------- */
+    function renderScatter(data) {
+      const svg = d3.select('#chart-scatter');
+      svg.selectAll('*').remove();
+      const width = 740, height = 400;
+      const margin = { top: 16, right: 20, bottom: 48, left: 52 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+      const innerW = width - margin.left - margin.right;
+      const innerH = height - margin.top - margin.bottom;
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const accent = cssVar('--accent');
+      const deemph = cssVar('--deemph');
+      const surface = cssVar('--surface-1');
+      const inkSec = cssVar('--text-secondary');
+
+      const pts = data
+        .filter(d => d.duration_hours !== null && d.duration_hours !== undefined)
+        .map(d => ({
+          hours: Math.max(Math.abs(d.duration_hours), 0.05),
+          msgs: Math.max(d.num_messages, 1),
+          met: met(d),
+          raw: d,
+        }));
+
+      const x = d3.scaleLog().domain([0.05, 2200]).range([0, innerW]);
+      const yScale = d3.scaleLog().domain([1, 400]).range([innerH, 0]);
+
+      g.append('g').selectAll('line')
+        .data([1, 24, 168, 720].map(x)).join('line')
+        .attr('class', 'grid-line')
+        .attr('x1', d => d).attr('x2', d => d)
+        .attr('y1', 0).attr('y2', innerH);
+
+      const xAxis = g.append('g').attr('class', 'chart-axis')
+        .attr('transform', `translate(0,${innerH})`)
+        .call(d3.axisBottom(x).tickValues([0.05, 1, 24, 168, 720])
+          .tickFormat(v => v === 0.05 ? '<3 min' : v === 1 ? '1h' : v === 24 ? '1 day' : v === 168 ? '1 week' : '1 month')
+          .tickSize(0).tickPadding(10));
+      xAxis.select('.domain').attr('stroke', cssVar('--baseline'));
+
+      g.append('g').attr('class', 'chart-axis')
+        .call(d3.axisLeft(yScale).tickValues([1, 10, 100]).tickFormat(d3.format('~s')).tickSize(0).tickPadding(8))
+        .call(ax => ax.select('.domain').remove());
+
+      g.append('text')
+        .attr('x', innerW).attr('y', innerH + 38)
+        .attr('text-anchor', 'end').attr('font-size', 11).attr('fill', inkSec)
+        .text('conversation lifespan →');
+      g.append('text')
+        .attr('x', -6).attr('y', -4)
+        .attr('text-anchor', 'start').attr('font-size', 11).attr('fill', inkSec)
+        .text('messages');
+
+      const ordered = pts.slice().sort((a, b) => a.met - b.met);
+      g.selectAll('.pt').data(ordered).join('circle')
+        .attr('class', 'pt')
+        .attr('cx', d => x(d.hours))
+        .attr('cy', d => yScale(d.msgs))
+        .attr('r', d => d.met ? 5 : 3.5)
+        .attr('fill', d => d.met ? accent : deemph)
+        .attr('stroke', surface)
+        .attr('stroke-width', 2);
+
+      const delaunay = d3.Delaunay.from(ordered, d => x(d.hours), d => yScale(d.msgs));
+      const highlight = g.append('circle')
+        .attr('r', 8).attr('fill', 'none')
+        .attr('stroke', accent).attr('stroke-width', 2)
+        .style('opacity', 0).style('pointer-events', 'none');
+
+      svg.on('pointermove', (event) => {
+        const [mx, my] = d3.pointer(event, g.node());
+        if (mx < -10 || my < -10 || mx > innerW + 10 || my > innerH + 10) { hideTooltip(); highlight.style('opacity', 0); return; }
+        const i = delaunay.find(mx, my);
+        const d = ordered[i];
+        if (!d) return;
+        highlight.attr('cx', x(d.hours)).attr('cy', yScale(d.msgs)).style('opacity', 1);
+        const span = d.raw.duration_hours < 0.05 ? 'under 3 minutes'
+          : d.raw.duration_hours < 48 ? `${d.raw.duration_hours.toFixed(1)} hours`
+          : `${(d.raw.duration_hours / 24).toFixed(1)} days`;
+        showTooltip([
+          { value: d.met ? 'Became a date' : 'No date', label: '' },
+          { value: `${d.raw.num_messages}`, label: 'messages' },
+          { value: span, label: 'lifespan' },
+        ], event);
+      }).on('pointerleave', () => { hideTooltip(); highlight.style('opacity', 0); });
+    }
+
+    /* ---------------- Act VII: weekday + timeline ---------------- */
+    function weekdayModel(data) {
+      const names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const groups = names.map(nm => ({ label: nm, n: 0, successes: 0 }));
+      data.forEach(d => {
+        if (!d.first_msg_time) return;
+        const dt = new Date(d.first_msg_time);
+        if (isNaN(dt)) return;
+        const idx = (dt.getDay() + 6) % 7;
+        groups[idx].n += 1;
+        if (met(d)) groups[idx].successes += 1;
+      });
+      groups.forEach(gp => {
+        gp.rate = gp.n ? gp.successes / gp.n : null;
+        gp.ci = wilson(gp.successes, gp.n);
+      });
+      return groups;
+    }
+
+    function renderWeekday(model) {
+      const svg = d3.select('#chart-weekday');
+      svg.selectAll('*').remove();
+      const width = 740, height = 330;
+      const margin = { top: 24, right: 16, bottom: 52, left: 48 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+      const innerW = width - margin.left - margin.right;
+      const innerH = height - margin.top - margin.bottom;
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const accent = cssVar('--accent');
+      const ink = cssVar('--text-primary');
+      const inkSec = cssVar('--text-secondary');
+
+      const x = d3.scaleBand().domain(model.map(d => d.label)).range([0, innerW]).paddingInner(0.5).paddingOuter(0.25);
+      const yMax = Math.max(0.3, d3.max(model, d => d.ci ? d.ci.upper : 0) * 1.05);
+      const yScale = d3.scaleLinear().domain([0, yMax]).range([innerH, 0]);
+      const barW = Math.min(x.bandwidth(), 24);
+      const bx = d => x(d.label) + (x.bandwidth() - barW) / 2;
+
+      g.append('g').selectAll('line').data(yScale.ticks(4)).join('line')
+        .attr('class', 'grid-line')
+        .attr('x1', 0).attr('x2', innerW)
+        .attr('y1', d => yScale(d)).attr('y2', d => yScale(d));
+
+      g.append('g').attr('class', 'chart-axis')
+        .call(d3.axisLeft(yScale).ticks(4).tickFormat(d3.format('.0%')).tickSize(0).tickPadding(8))
+        .call(ax => ax.select('.domain').remove());
+
+      g.selectAll('.bar').data(model).join('path')
+        .attr('class', 'bar')
+        .attr('d', d => barPath(bx(d), yScale(d.rate || 0), barW, innerH))
+        .attr('fill', accent)
+        .on('pointermove', (event, d) => showTooltip([
+          { value: d.rate !== null ? `${(d.rate * 100).toFixed(1)}%` : '—', label: `meeting rate · started ${d.label}` },
+          { value: `${d.successes} of ${d.n}`, label: 'became dates' },
+          { value: d.ci ? `${(d.ci.lower * 100).toFixed(1)}–${(d.ci.upper * 100).toFixed(1)}%` : '—', label: '95% CI' },
+        ], event))
+        .on('pointerleave', hideTooltip);
+
+      g.selectAll('.ci').data(model.filter(d => d.ci && d.n)).join('line')
+        .attr('x1', d => bx(d) + barW / 2).attr('x2', d => bx(d) + barW / 2)
+        .attr('y1', d => yScale(d.ci.lower)).attr('y2', d => yScale(d.ci.upper))
+        .attr('stroke', ink).attr('stroke-width', 1.5).attr('opacity', 0.7)
+        .attr('pointer-events', 'none');
+
+      const best = model.reduce((a, b) => (b.rate ?? -1) > (a.rate ?? -1) ? b : a);
+      g.append('text')
+        .attr('x', bx(best) + barW / 2)
+        .attr('y', yScale(best.ci.upper) - 8)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 13).attr('font-weight', 600).attr('fill', ink)
+        .attr('pointer-events', 'none')
+        .text(`${(best.rate * 100).toFixed(0)}%`);
+
+      const xAxis = g.append('g').attr('class', 'chart-axis')
+        .attr('transform', `translate(0,${innerH})`)
+        .call(d3.axisBottom(x).tickSize(0).tickPadding(10));
+      xAxis.select('.domain').attr('stroke', cssVar('--baseline'));
+
+      g.selectAll('.n-label').data(model).join('text')
+        .attr('x', d => x(d.label) + x.bandwidth() / 2)
+        .attr('y', innerH + 40)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 10.5).attr('fill', inkSec)
+        .text(d => `n = ${d.n}`);
+    }
+
+    function renderTimeline(timeline) {
+      const svg = d3.select('#chart-timeline');
+      svg.selectAll('*').remove();
+      const width = 740, height = 260;
+      const margin = { top: 34, right: 16, bottom: 40, left: 44 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+      const innerW = width - margin.left - margin.right;
+      const innerH = height - margin.top - margin.bottom;
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const accent = cssVar('--accent');
+      const ink = cssVar('--text-primary');
+      const inkSec = cssVar('--text-secondary');
+
+      // fill calendar gaps so droughts are visible as droughts
+      const counts = new Map(timeline.by_month.map(d => [d.month, d.count]));
+      const months = timeline.by_month.map(d => d.month).sort();
+      const filled = [];
+      let [yr, mo] = months[0].split('-').map(Number);
+      const last = months[months.length - 1];
+      let key = months[0];
+      while (key <= last) {
+        filled.push({ month: key, count: counts.get(key) || 0 });
+        mo += 1;
+        if (mo > 12) { mo = 1; yr += 1; }
+        key = `${yr}-${String(mo).padStart(2, '0')}`;
+      }
+
+      const x = d3.scaleBand().domain(filled.map(d => d.month)).range([0, innerW]).paddingInner(0.25);
+      const yScale = d3.scaleLinear().domain([0, d3.max(filled, d => d.count) * 1.08]).range([innerH, 0]);
+
+      g.append('g').selectAll('line').data(yScale.ticks(3)).join('line')
+        .attr('class', 'grid-line')
+        .attr('x1', 0).attr('x2', innerW)
+        .attr('y1', d => yScale(d)).attr('y2', d => yScale(d));
+
+      g.append('g').attr('class', 'chart-axis')
+        .call(d3.axisLeft(yScale).ticks(3).tickFormat(d3.format('~s')).tickSize(0).tickPadding(8))
+        .call(ax => ax.select('.domain').remove());
+
+      g.selectAll('.bar').data(filled).join('rect')
+        .attr('x', d => x(d.month))
+        .attr('y', d => yScale(d.count))
+        .attr('width', x.bandwidth())
+        .attr('height', d => innerH - yScale(d.count))
+        .attr('rx', Math.min(2, x.bandwidth() / 2))
+        .attr('fill', accent)
+        .attr('opacity', 0.85)
+        .on('pointermove', (event, d) => {
+          const [y2, m2] = d.month.split('-');
+          const name = new Date(Number(y2), Number(m2) - 1, 1).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+          showTooltip([{ value: d.count.toLocaleString(), label: `messages · ${name}` }], event);
+        })
+        .on('pointerleave', hideTooltip);
+
+      // year ticks at january positions
+      const jans = filled.filter(d => d.month.endsWith('-01') || d.month === filled[0].month);
+      const xAxis = g.append('g').attr('class', 'chart-axis')
+        .attr('transform', `translate(0,${innerH})`);
+      xAxis.append('line').attr('x1', 0).attr('x2', innerW).attr('stroke', cssVar('--baseline'));
+      jans.forEach(d => {
+        xAxis.append('text')
+          .attr('x', x(d.month)).attr('y', 24)
+          .attr('font-size', 11).attr('fill', cssVar('--text-muted'))
+          .text(d.month.slice(0, 4));
+      });
+
+      // one era annotation — the story month
+      const peak = filled.reduce((a, b) => b.count > a.count ? b : a);
+      g.append('text')
+        .attr('x', Math.min(x(peak.month) + x.bandwidth() / 2, innerW - 4))
+        .attr('y', yScale(peak.count) - 10)
+        .attr('text-anchor', 'end')
+        .attr('font-size', 11).attr('font-weight', 600).attr('fill', ink)
+        .attr('pointer-events', 'none')
+        .text(`the ${peak.month.slice(0, 4)} era · ${peak.count.toLocaleString()} msgs in one month`);
+
+      buildTable('table-timeline',
+        ['Month', 'Messages'],
+        timeline.by_month.map(d => [d.month, d.count]));
+    }
+
+    /* ---------------- Act VIII: opener autopsy (conditional) ---------------- */
+    function renderOpener(data) {
+      const hasFeatures = data.some(d => d.opener_cheese_score !== undefined && d.opener_cheese_score !== null);
+      if (!hasFeatures) return; // locked card stays
+
+      document.getElementById('opener-locked').hidden = true;
+      document.getElementById('opener-charts').hidden = false;
+
+      const styles = [
+        { id: 'loweffort', label: '“Hey” & friends', test: d => d.opener_is_low_effort === true },
+        { id: 'cheesy', label: 'Certified cheesy', test: d => d.opener_cheese_score >= 1 && !d.opener_is_low_effort },
+        { id: 'question', label: 'Opens with a question', test: d => d.opener_has_question === true && d.opener_cheese_score === 0 && !d.opener_is_low_effort },
+        { id: 'statement', label: 'Plain statement', test: d => d.opener_has_question === false && d.opener_cheese_score === 0 && !d.opener_is_low_effort },
+      ];
+      const withOpener = data.filter(d => d.opener_cheese_score !== undefined && d.opener_cheese_score !== null);
+      const model = styles.map(s => {
+        const grp = withOpener.filter(s.test);
+        const successes = grp.filter(met).length;
+        return { ...s, n: grp.length, successes, rate: grp.length ? successes / grp.length : null, ci: wilson(successes, grp.length) };
+      }).filter(s => s.n > 0);
+
+      const svg = d3.select('#chart-opener');
+      svg.selectAll('*').remove();
+      const width = 740, height = 300;
+      const margin = { top: 24, right: 16, bottom: 52, left: 48 };
+      svg.attr('viewBox', `0 0 ${width} ${height}`);
+      const innerW = width - margin.left - margin.right;
+      const innerH = height - margin.top - margin.bottom;
+      const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+      const accent = cssVar('--accent');
+      const ink = cssVar('--text-primary');
+      const inkSec = cssVar('--text-secondary');
+
+      const x = d3.scaleBand().domain(model.map(d => d.id)).range([0, innerW]).paddingInner(0.5).paddingOuter(0.25);
+      const yMax = Math.max(0.2, d3.max(model, d => d.ci ? d.ci.upper : 0) * 1.05);
+      const yScale = d3.scaleLinear().domain([0, yMax]).range([innerH, 0]);
+      const barW = Math.min(x.bandwidth(), 24);
+      const bx = d => x(d.id) + (x.bandwidth() - barW) / 2;
+
+      g.append('g').selectAll('line').data(yScale.ticks(4)).join('line')
+        .attr('class', 'grid-line')
+        .attr('x1', 0).attr('x2', innerW)
+        .attr('y1', d => yScale(d)).attr('y2', d => yScale(d));
+
+      g.append('g').attr('class', 'chart-axis')
+        .call(d3.axisLeft(yScale).ticks(4).tickFormat(d3.format('.0%')).tickSize(0).tickPadding(8))
+        .call(ax => ax.select('.domain').remove());
+
+      g.selectAll('.bar').data(model).join('path')
+        .attr('d', d => barPath(bx(d), yScale(d.rate || 0), barW, innerH))
+        .attr('fill', accent)
+        .on('pointermove', (event, d) => showTooltip([
+          { value: d.rate !== null ? `${(d.rate * 100).toFixed(1)}%` : '—', label: `meeting rate · ${d.label}` },
+          { value: `${d.successes} of ${d.n}`, label: 'became dates' },
+        ], event))
+        .on('pointerleave', hideTooltip);
+
+      g.selectAll('.ci').data(model.filter(d => d.ci)).join('line')
+        .attr('x1', d => bx(d) + barW / 2).attr('x2', d => bx(d) + barW / 2)
+        .attr('y1', d => yScale(d.ci.lower)).attr('y2', d => yScale(d.ci.upper))
+        .attr('stroke', ink).attr('stroke-width', 1.5).attr('opacity', 0.7)
+        .attr('pointer-events', 'none');
+
+      const xAxis = g.append('g').attr('class', 'chart-axis')
+        .attr('transform', `translate(0,${innerH})`)
+        .call(d3.axisBottom(x).tickFormat(id => model.find(d => d.id === id).label).tickSize(0).tickPadding(10));
+      xAxis.select('.domain').attr('stroke', cssVar('--baseline'));
+
+      g.selectAll('.n-label').data(model).join('text')
+        .attr('x', d => x(d.id) + x.bandwidth() / 2)
+        .attr('y', innerH + 40)
+        .attr('text-anchor', 'middle')
+        .attr('font-size', 10.5).attr('fill', inkSec)
+        .text(d => `n = ${d.n}`);
+
+      buildTable('table-opener',
+        ['Opener style', 'Conversations', 'Became dates', 'Meeting rate'],
+        model.map(d => [d.label, d.n, d.successes, d.rate !== null ? `${(d.rate * 100).toFixed(1)}%` : '—']));
+    }
+
+    /* ---------------- assemble ---------------- */
+    let cache = null;
+    function renderAll() {
+      if (!cache) return;
+      const { funnel, data, timeline } = cache;
+
+      renderKpis(funnel, data);
+      renderVoid(funnel, data);
+      buildTable('table-void',
+        ['Outcome', 'Matches', 'Share'],
+        [
+          ['Matched, then silence', (funnel.total_matches - data.length).toLocaleString(), `${((funnel.total_matches - data.length) / funnel.total_matches * 100).toFixed(1)}%`],
+          ['Replied, no date', (data.length - data.filter(met).length).toLocaleString(), `${((data.length - data.filter(met).length) / funnel.total_matches * 100).toFixed(2)}%`],
+          ['Became a date', String(data.filter(met).length), `${(data.filter(met).length / funnel.total_matches * 100).toFixed(2)}%`],
+        ]);
+
+      const sm = sankeyModel(data);
+      renderSankey(sm);
+      buildTable('table-sankey',
+        ['Invite type', 'Conversations', 'Became dates', 'Meeting rate'],
+        [
+          ['Concrete ask', sm.concrete.total, sm.concrete.met, `${(sm.concrete.met / sm.concrete.total * 100).toFixed(1)}%`],
+          ['Vague ask', sm.loose.total, sm.loose.met, `${(sm.loose.met / sm.loose.total * 100).toFixed(1)}%`],
+          ['No ask', sm.none.total, sm.none.met, `${(sm.none.met / sm.none.total * 100).toFixed(1)}%`],
+          ['All conversations', sm.total, sm.totalMet, `${(sm.totalMet / sm.total * 100).toFixed(1)}%`],
+        ]);
+      renderAskTimingTiles(data);
+
+      renderSurvival(computeSurvival(data));
+
+      const dm = depthModel(data);
+      renderDepth(dm);
+      buildTable('table-depth',
+        ['Messages exchanged', 'Conversations', 'Became dates', 'Meeting rate', '95% CI'],
+        dm.map(d => [d.label, d.n, d.successes, `${(d.rate * 100).toFixed(1)}%`,
+          `${(d.ci.lower * 100).toFixed(1)}–${(d.ci.upper * 100).toFixed(1)}%`]));
+
+      const mm = mythModel(data);
+      renderMyth(mm);
+      buildTable('table-myth',
+        ['Opening-style measure', 'Date conversations', 'Everything else'],
+        mm.map(r => [r.label, r.fmt(r.dates), r.fmt(r.rest)]));
+
+      renderScatter(data);
+      const datesRows = data.filter(met)
+        .filter(d => d.duration_hours !== null)
+        .sort((a, b) => b.num_messages - a.num_messages);
+      buildTable('table-scatter',
+        ['Messages', 'Lifespan', 'First ask at msg #', 'Concrete?'],
+        datesRows.map(d => [
+          d.num_messages,
+          d.duration_hours < 0.05 ? '<3 min' : d.duration_hours < 48 ? `${d.duration_hours.toFixed(1)} h` : `${(d.duration_hours / 24).toFixed(1)} days`,
+          d.first_invite_msg_index !== null && d.first_invite_msg_index !== undefined ? d.first_invite_msg_index : 'no ask',
+          d.first_invite_msg_index !== null && d.first_invite_msg_index !== undefined ? (d.invite_is_concrete ? 'yes' : 'no') : '—',
+        ]));
+
+      const wm = weekdayModel(data);
+      renderWeekday(wm);
+      const mon = wm[0];
+      document.getElementById('stat-monday').textContent = `${mon.successes} of ${mon.n}`;
+      buildTable('table-weekday',
+        ['Started on', 'Conversations', 'Became dates', 'Meeting rate', '95% CI'],
+        wm.map(d => [d.label, d.n, d.successes,
+          d.rate !== null ? `${(d.rate * 100).toFixed(1)}%` : '—',
+          d.ci ? `${(d.ci.lower * 100).toFixed(1)}–${(d.ci.upper * 100).toFixed(1)}%` : '—']));
+
+      renderTimeline(timeline);
+      renderOpener(data);
+    }
+
+    Promise.all([
+      fetch('./data/conversations_features.json').then(r => r.json()),
+      fetch('./data/funnel_stats.json').then(r => r.json()),
+      fetch('./data/timeline_stats.json').then(r => r.json()),
+    ]).then(([data, funnel, timeline]) => {
+      cache = { data, funnel, timeline };
+      renderAll();
+    }).catch(err => console.error('Failed to load data', err));
+
+    DARK.addEventListener('change', renderAll);
   </script>
 </body>
 </html>

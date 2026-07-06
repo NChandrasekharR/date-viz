@@ -5,13 +5,18 @@ A personal data visualization project analyzing Hinge dating app conversation pa
 ## Live Demo
 View the scrollytelling visualization at: [Your GitHub Pages URL]
 
-## Features
+## The Story (index.html)
 
-- 📊 **Personal Journey Dashboard** - Your complete dating funnel from matches to meetings
-- 📈 **Conversion Funnel** - Animated visualization showing match → response → meeting rates
-- ⏱️ **Activity Timeline** - Monthly message patterns over time
-- 📉 **Survival Analysis** - Kaplan-Meier curves showing conversation lifespans
-- 🎯 **Success Patterns** - What messaging strategies work best
+A single scrolling forensic report in eight acts:
+
+- 🕳️ **Act I — The Void**: all 5,601 matches drawn to scale (the dates are ~2 pixels)
+- 🌊 **Act II — The Sankey**: 207 conversations flowing through ask type to outcome
+- ⏱️ **Act III — Survival**: Kaplan–Meier curve; median conversation lifespan ≈ 90 minutes
+- 🪜 **Act IV — Depth ladder**: meeting rate climbs from 1.6% to 26% with conversation length
+- 🔬 **Act V — Myth autopsy**: texting style barely differs between dates and non-dates
+- 🏃 **Act VI — Marathons**: lifespan × messages scatter, dates highlighted
+- 📅 **Act VII — Rhythms**: weekday effects and the six-year activity timeline
+- 🧀 **Act VIII — Opener autopsy**: cheesiness vs. outcomes (unlocks after you regenerate features locally)
 
 ## Your Data (Privacy Protected)
 

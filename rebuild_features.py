@@ -37,6 +37,43 @@ def extract_invite_info(chats):
 
     return None, None
 
+CHEESE_MARKERS = [
+    'did it hurt', 'fell from heaven', 'angel', 'cutie', 'beautiful', 'gorgeous',
+    'stunning', 'wifey', 'my future', 'love at first', 'marry me', 'soulmate',
+    'damn girl', 'sexy', 'hottie', 'dream girl', 'dream guy', 'a snack',
+    'out of my league', 'google', 'wanted poster', 'parking ticket', 'library card',
+    'checking you out', 'magician', 'time traveler', 'my mom said', 'netflix and',
+]
+
+LOW_EFFORT_OPENERS = {
+    'hey', 'heyy', 'heyyy', 'hi', 'hii', 'hiii', 'hello', 'yo', 'sup', 'wassup',
+    "what's up", 'whats up', 'hey there', 'hi there', 'hey :)', 'hi :)', 'hey!',
+    'hi!', 'hello!', 'howdy', 'hola', 'heya',
+}
+
+EMOJI_RANGES = re.compile(
+    '[\U0001F300-\U0001FAFF\U00002600-\U000027BF\U0001F000-\U0001F0FF\U00002190-\U000021FF\U00002700-\U000027BF]'
+)
+
+def analyze_opener(chats):
+    """Privacy-safe features of the very first message: numbers and booleans only,
+    never the text itself."""
+    if not chats:
+        return {}
+    body = (chats[0].get('body') or '').strip()
+    if not body:
+        return {}
+    lowered = body.lower()
+    cheese = sum(1 for marker in CHEESE_MARKERS if marker in lowered)
+    return {
+        'opener_len': len(body),
+        'opener_word_count': len(body.split()),
+        'opener_has_question': '?' in body,
+        'opener_is_low_effort': lowered.rstrip('.!') in LOW_EFFORT_OPENERS or len(body.split()) <= 2 and lowered.split()[0].rstrip('.!,') in LOW_EFFORT_OPENERS,
+        'opener_cheese_score': cheese,
+        'opener_emoji_count': len(EMOJI_RANGES.findall(body)),
+    }
+
 def analyze_questions(chats, limit=10):
     """Calculate question density in first N messages"""
     first_n = chats[:limit] if len(chats) >= limit else chats
@@ -108,6 +145,9 @@ for match in matches:
     # Extract invite info
     invite_index, is_concrete = extract_invite_info(chats)
 
+    # Opener style (privacy-safe: numbers/booleans only, no text)
+    opener = analyze_opener(chats)
+
     # Analyze messaging style
     question_density = analyze_questions(chats)
     median_length = analyze_message_length(chats)
@@ -145,6 +185,7 @@ for match in matches:
         'year': year,
         'num_messages': len(chats)
     }
+    feature_row.update(opener)
 
     features.append(feature_row)
 
